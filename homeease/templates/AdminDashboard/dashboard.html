@@ -1,0 +1,216 @@
+<!-- ADMIN DASHBOARD (admin_dashboard.html) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <style>
+    :root{
+      --bg:#0b1220; --panel: rgba(255,255,255,.06); --panel2: rgba(0,0,0,.18);
+      --text:#eaf0ff; --muted: rgba(234,240,255,.7); --border: rgba(255,255,255,.12);
+      --primary:#4f7cff; --good:#22c55e; --warn:#f59e0b; --bad:#ef4444; --radius:16px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(900px circle at 10% 10%, rgba(79,124,255,.25), transparent 55%),
+        radial-gradient(900px circle at 90% 10%, rgba(34,197,94,.18), transparent 55%),
+        linear-gradient(180deg, #0b1220, #070b14);
+      color:var(--text);min-height:100vh
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+    @media (max-width:980px){.wrap{grid-template-columns:1fr}.sidebar{position:static;height:auto}}
+
+    .sidebar{
+      position:sticky;top:0;height:100vh;padding:18px;
+      border-right:1px solid var(--border);
+      background:rgba(7,11,20,.55);backdrop-filter:blur(10px)
+    }
+    .brand{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px;border:1px solid var(--border);border-radius:var(--radius);
+      background:var(--panel);margin-bottom:14px
+    }
+    .brand strong{letter-spacing:.3px}
+    .role{font-size:12px;color:var(--muted);margin-top:2px}
+    .pill{font-size:12px;padding:3px 8px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted)}
+    .nav{display:grid;gap:8px;margin-top:10px}
+    .nav a{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:12px;border-radius:14px;color:var(--muted);border:1px solid transparent;transition:.15s ease
+    }
+    .nav a:hover{border-color:var(--border);background:rgba(255,255,255,.05);color:var(--text);transform:translateY(-1px)}
+
+    .main{padding:18px}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--panel)
+    }
+    .topbar h1{font-size:18px;margin-bottom:2px}
+    .topbar p{font-size:13px;color:var(--muted)}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:10px 12px;border-radius:12px;border:1px solid var(--border);
+      background:transparent;color:var(--text);font-weight:600;cursor:pointer;transition:.15s ease;white-space:nowrap
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn-primary{background:linear-gradient(135deg,var(--primary),#7c5cff);border-color:transparent}
+
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:14px}
+    .card{
+      grid-column:span 3;padding:16px;border-radius:var(--radius);
+      border:1px solid var(--border);background:var(--panel);min-height:92px
+    }
+    @media (max-width:1100px){.card{grid-column:span 6}}
+    @media (max-width:650px){.card{grid-column:span 12}}
+    .card .k{font-size:13px;color:var(--muted)}
+    .card .v{font-size:22px;font-weight:800;margin-top:6px}
+    .card .s{font-size:12px;color:var(--muted);margin-top:8px}
+    .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+
+    .panel{
+      grid-column:span 7;padding:16px;border-radius:var(--radius);
+      border:1px solid var(--border);background:var(--panel)
+    }
+    .panel2{
+      grid-column:span 5;padding:16px;border-radius:var(--radius);
+      border:1px solid var(--border);background:var(--panel)
+    }
+    @media (max-width:980px){.panel,.panel2{grid-column:span 12}}
+    .panel h2,.panel2 h2{font-size:16px;margin-bottom:10px}
+    .sub{color:var(--muted);font-size:13px;margin-bottom:12px}
+
+    table{
+      width:100%;border-collapse:collapse;overflow:hidden;border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);background:var(--panel2)
+    }
+    th,td{padding:10px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+    th{color:var(--muted);font-weight:700;background:rgba(255,255,255,.03)}
+    tr:last-child td{border-bottom:none}
+
+    .tag{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid var(--border);color:var(--muted);background:rgba(255,255,255,.04)}
+    .tag.good{border-color:rgba(34,197,94,.35);color:rgba(170,255,206,.95)}
+    .tag.warn{border-color:rgba(245,158,11,.35);color:rgba(255,228,166,.95)}
+    .tag.bad{border-color:rgba(239,68,68,.35);color:rgba(255,180,180,.95)}
+
+    .quick{display:grid;gap:10px}
+    .qbtn{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18)
+    }
+    .qbtn span{color:var(--muted);font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <aside class="sidebar">
+      <div class="brand">
+        <div>
+          <strong>ServiceProvider</strong>
+          <div class="role">Admin Dashboard</div>
+        </div>
+        <span class="pill">Admin</span>
+      </div>
+
+      <nav class="nav">
+        <a href="#">Overview <span class="pill">Home</span></a>
+        <a href="#">Users <span class="pill">Manage</span></a>
+        <a href="#">Providers <span class="pill">Manage</span></a>
+        <a href="#">Services <span class="pill">Catalog</span></a>
+        <a href="#">Bookings <span class="pill">Track</span></a>
+        <a href="#">Logout <span class="pill">Exit</span></a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1>Dashboard</h1>
+          <p>Monitor users, providers, services and bookings.</p>
+        </div>
+        <div class="actions">
+          <a class="btn" href="#">View website</a>
+          <a class="btn btn-primary" href="#">Manage bookings</a>
+        </div>
+      </div>
+
+      <section class="grid">
+        <div class="card">
+          <div class="k">Total users</div>
+          <div class="v">1,245</div>
+          <div class="s"><span class="dot" style="background:var(--primary)"></span>Active accounts</div>
+        </div>
+        <div class="card">
+          <div class="k">Providers</div>
+          <div class="v">210</div>
+          <div class="s"><span class="dot" style="background:var(--good)"></span>Verified + pending</div>
+        </div>
+        <div class="card">
+          <div class="k">Bookings (today)</div>
+          <div class="v">34</div>
+          <div class="s"><span class="dot" style="background:var(--warn)"></span>New requests</div>
+        </div>
+        <div class="card">
+          <div class="k">Open issues</div>
+          <div class="v">5</div>
+          <div class="s"><span class="dot" style="background:var(--bad)"></span>Need attention</div>
+        </div>
+
+        <div class="panel">
+          <h2>Recent bookings</h2>
+          <div class="sub">Latest activity from customers and providers.</div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Service</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#1023</td>
+                <td>Ram</td>
+                <td>Plumber</td>
+                <td><span class="tag warn">Pending</span></td>
+                <td>2025-12-19</td>
+              </tr>
+              <tr>
+                <td>#1022</td>
+                <td>Sita</td>
+                <td>Cleaning</td>
+                <td><span class="tag good">Completed</span></td>
+                <td>2025-12-18</td>
+              </tr>
+              <tr>
+                <td>#1021</td>
+                <td>Hari</td>
+                <td>Electrician</td>
+                <td><span class="tag bad">Cancelled</span></td>
+                <td>2025-12-18</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel2">
+          <h2>Quick actions</h2>
+          <div class="sub">Common admin operations.</div>
+          <div class="quick">
+            <a class="qbtn" href="#"><div><strong>Approve providers</strong><br><span>Verify new registrations</span></div><span class="pill">Open</span></a>
+            <a class="qbtn" href="#"><div><strong>Manage services</strong><br><span>Add/edit categories</span></div><span class="pill">Open</span></a>
+            <a class="qbtn" href="#"><div><strong>Manage users</strong><br><span>Block/unblock accounts</span></div><span class="pill">Open</span></a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
