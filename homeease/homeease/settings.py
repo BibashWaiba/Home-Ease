@@ -80,8 +80,12 @@ WSGI_APPLICATION = 'homeease.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'HomeEase',
+        'USER': 'postgres',
+        'PASSWORD': 'Bibash@2061',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
