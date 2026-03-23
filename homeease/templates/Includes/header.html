@@ -1,0 +1,30 @@
+<nav id="navbar">
+  <a href="/" class="nav-logo">
+    <i class="fas fa-home"></i> Home<span>Ease</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="#">Services</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <a href="{% url 'login' %}" class="btn-ghost">Login</a>
+    <a href="{% url 'register' %}" class="btn-primary">Register</a>
+  </div>
+
+  <button class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/">Home</a>
+  <a href="#">Services</a>
+  <a href="#">About</a>
+  <a href="#">Contact</a>
+  <a href="#">Login</a>
+  <a href="#" class="btn-primary">Register</a>
+</div>

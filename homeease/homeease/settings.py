@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'accounts',
     'user_dashboard',
     'admin_dashboard',
+    'publicpages',
 ]
 
 

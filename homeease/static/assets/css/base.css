@@ -1,0 +1,67 @@
+/* RESET */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue: #1B4FD8;
+  --blue-dark: #0f3ab5;
+  --blue-light: #EEF2FF;
+  --orange: #F97316;
+  --orange-dark: #ea6c0a;
+  --dark: #0F172A;
+  --dark2: #1E293B;
+  --muted: #64748B;
+  --light: #F8FAFC;
+  --white: #ffffff;
+  --border: #E2E8F0;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--dark);
+  background: var(--white);
+  overflow-x: hidden;
+}
+
+h1,h2,h3,h4,h5 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* COMMON SECTIONS */
+section { padding: 90px 5%; }
+
+/* BUTTONS */
+.btn-primary {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: none;
+  background: var(--blue);
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+}
+.btn-primary:hover { background: var(--blue-dark); }
+
+.btn-ghost {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--dark);
+  text-decoration: none;
+}
+.btn-ghost:hover { color: var(--blue); border-color: var(--blue); }
+
+/* FADE */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: 0.6s;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}

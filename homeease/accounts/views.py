@@ -116,8 +116,3 @@ def LoginPage(request):
 
 
 
-def Home(request):
-    """
-    Home page view
-    """
-    return render(request, "index.html")

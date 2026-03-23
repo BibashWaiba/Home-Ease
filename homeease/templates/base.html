@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Home Ease{% endblock %}</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="{% static 'assets/css/PublicPages/style.css' %}">
+
+    <link rel="stylesheet" href="{% static 'assets/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Includes/header.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/Includes/footer.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/PublicPages/style.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+  {% include 'Includes/header.html' %}
+
+  {% block content %}{% endblock %}
+
+  {% include 'Includes/footer.html' %}
+
+  <!-- Scripts -->
+  <script src="{% static 'assets/js/main.js' %}"></script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
