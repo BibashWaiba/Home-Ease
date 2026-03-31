@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Services — Home Ease{% endblock %}
+{% block content %}
+<section class="page-header" style="margin-top: 70px; text-align: center; padding: 40px 20px; background-color: #f9f9f9; border-bottom: 1px solid #eee;">
+  <div class="page-header-inner">
+    <h1 style="margin-bottom: 10px; font-size: 2.5rem; color: #333;">Our Services</h1>
+    <p style="color: #666; font-size: 1.1rem;">Search for a service or browse categories below</p>
+    
+    <div class="search-bar" style="max-width: 600px; margin: 25px auto 0;">
+      <form action="{% url 'services' %}" method="GET" style="display: flex; gap: 10px;">
+        <input type="text" name="q" placeholder="Search for plumbers, electricians..." value="{{ query }}" required style="flex: 1; padding: 14px 20px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <button type="submit" style="padding: 14px 28px; background-color: #ff6b00; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background-color 0.3s ease;">Search</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="services-content" style="padding: 60px 5%; min-height: 50vh;">
+  {% if is_search %}
+    <h2 style="margin-bottom: 40px; text-align: center; color: #333;">Search Results for "{{ query }}"</h2>
+    {% if services %}
+      <div class="services-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+        {% for service in services %}
+          <a href="{% url 'service_detail' service.id %}" style="text-decoration: none; color: inherit; display: block;">
+            <div class="service-card" style="background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 25px; display: flex; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)';">
+              {% if service.image %}
+                <img src="{{ service.image.url }}" alt="{{ service.name }}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
+              {% endif %}
+              <h3 style="color: #ff6b00; margin-bottom: 10px; font-size: 1.4rem;">{{ service.name }}</h3>
+              <p style="color: #555; margin-bottom: 20px; flex: 1; line-height: 1.6;">{{ service.description|truncatewords:20 }}</p>
+              <div style="font-weight: 700; font-size: 1.3rem; color: #333;">Rs. {{ service.price }}</div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="text-align: center; padding: 40px; background: #fff; border-radius: 8px;">
+        <i class="fas fa-search" style="font-size: 3rem; color: #ddd; margin-bottom: 15px;"></i>
+        <p style="color: #666; font-size: 1.1rem;">No services found matching your query. Please try searching with different keywords.</p>
+        <a href="{% url 'services' %}" style="display: inline-block; margin-top: 20px; padding: 10px 20px; border: 1px solid #ff6b00; color: #ff6b00; border-radius: 6px; text-decoration: none; font-weight: 500;">View All Categories</a>
+      </div>
+    {% endif %}
+  {% else %}
+    <h2 style="margin-bottom: 40px; text-align: center; color: #333;">Browse by Category</h2>
+    {% if categories %}
+      <div class="categories-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+        {% for category in categories %}
+          <a href="{% url 'category_services' category.id %}" style="text-decoration: none; color: inherit; display: block;">
+            <div class="category-card" style="background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 25px; text-align: center; transition: all 0.3s ease; border: 1px solid transparent;" onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor='#ff6b00'; this.style.boxShadow='0 8px 25px rgba(255,107,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='transparent'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)';">
+              {% if category.image %}
+                <img src="{{ category.image.url }}" alt="{{ category.name }}" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
+              {% endif %}
+              <h3 style="color: #333; margin-bottom: 10px; font-size: 1.3rem; transition: color 0.3s ease;">{{ category.name }}</h3>
+              <p style="color: #777; font-size: 0.95rem; line-height: 1.5;">{{ category.description|truncatewords:15 }}</p>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="text-align: center; color: #666; font-size: 1.1rem;">No categories available yet. Please check back later.</p>
+    {% endif %}
+  {% endif %}
+</section>
+{% endblock %}
