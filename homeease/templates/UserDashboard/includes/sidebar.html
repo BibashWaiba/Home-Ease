@@ -7,7 +7,6 @@
     </div>
     <span class="pill">User</span>
   </div>
-
   <nav class="nav">
     <a href="{% url 'user_dashboard' %}" class="{% if request.resolver_match.url_name == 'user_dashboard' %}active{% endif %}">
       <i class="fas fa-calendar-check"></i> My Bookings
