@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}{{ category.name }} Services — Home Ease{% endblock %}
+{% block content %}
+<section class="page-header" style="margin-top: 70px; text-align: center; padding: 50px 20px; background-color: #f9f9f9; border-bottom: 1px solid #eee;">
+  <div class="page-header-inner" style="max-width: 800px; margin: 0 auto;">
+    <h1 style="margin-bottom: 15px; font-size: 2.5rem; color: #333;">{{ category.name }}</h1>
+    <p style="color: #666; font-size: 1.1rem; line-height: 1.6;">{{ category.description }}</p>
+    <div style="margin-top: 25px;">
+      <a href="{% url 'services' %}" style="display: inline-block; padding: 10px 20px; border: 1px solid #ddd; color: #555; text-decoration: none; border-radius: 6px; font-weight: 500; transition: all 0.3s ease;">&larr; Back to Categories</a>
+    </div>
+  </div>
+</section>
+
+<section class="services-content" style="padding: 60px 5%; min-height: 50vh;">
+  {% if services %}
+    <div class="services-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+      {% for service in services %}
+        <a href="{% url 'service_detail' service.id %}" style="text-decoration: none; color: inherit; display: block;">
+          <div class="service-card" style="background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 25px; display: flex; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)';">
+            {% if service.image %}
+              <img src="{{ service.image.url }}" alt="{{ service.name }}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
+            {% endif %}
+            <h3 style="color: #ff6b00; margin-bottom: 10px; font-size: 1.4rem;">{{ service.name }}</h3>
+            <p style="color: #555; margin-bottom: 20px; flex: 1; line-height: 1.6;">{{ service.description|truncatewords:20 }}</p>
+            <div style="font-weight: 700; font-size: 1.3rem; color: #333;">Rs. {{ service.price }}</div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div style="text-align: center; padding: 40px; background: #fff; border-radius: 8px;">
+      <i class="fas fa-tools" style="font-size: 3rem; color: #ddd; margin-bottom: 15px;"></i>
+      <p style="text-align: center; color: #666; font-size: 1.1rem;">No services available in this category yet. Check back soon!</p>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}
