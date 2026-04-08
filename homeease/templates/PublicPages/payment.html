@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Complete Payment — Home Ease{% endblock %}
+{% block content %}
+<section class="page-header" style="margin-top: 70px; background-color: #f9f9f9; border-bottom: 1px solid #eee; padding: 40px 20px; text-align: center;">
+  <div class="page-header-inner" style="max-width: 800px; margin: 0 auto;">
+    <h1 style="margin-bottom: 15px; font-size: 2.5rem; color: #333;">Complete Your Payment</h1>
+    <p style="color: #666; font-size: 1.1rem; line-height: 1.6;">You are booking <strong>{{ booking.service.name }}</strong> for {{ booking.date }} at {{ booking.time }}.</p>
+  </div>
+</section>
+
+<section class="payment-content" style="padding: 60px 5%; min-height: 50vh;">
+  <div class="payment-inner" style="max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 40px;">
+    <h2 style="margin-bottom: 25px; color: #333; text-align: center;">Secure Checkout</h2>
+    <div style="background: #fdfdfd; border: 1px solid #eee; padding: 20px; border-radius: 8px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+      <span style="font-size: 1.1rem; color: #555; font-weight: 500;">Total Amount to Pay</span>
+      <span style="font-size: 1.5rem; color: #ff6b00; font-weight: 700;">Rs. {{ booking.service.price }}</span>
+    </div>
+    
+    <form action="{% url 'payment' booking.id %}" method="POST" style="display: flex; flex-direction: column; gap: 20px;">
+      {% csrf_token %}
+      
+      <div>
+        <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500; font-size: 0.95rem;">Card Number</label>
+        <input type="text" placeholder="XXXX XXXX XXXX XXXX" required style="width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; font-family: inherit;">
+      </div>
+      
+      <div style="display: flex; gap: 20px;">
+        <div style="flex: 1;">
+          <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500; font-size: 0.95rem;">Expiry Date</label>
+          <input type="text" placeholder="MM/YY" required style="width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; font-family: inherit;">
+        </div>
+        <div style="flex: 1;">
+          <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500; font-size: 0.95rem;">CVV</label>
+          <input type="password" placeholder="XXX" required style="width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; font-family: inherit;">
+        </div>
+      </div>
+      
+      <div>
+        <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500; font-size: 0.95rem;">Name on Card</label>
+        <input type="text" placeholder="John Doe" required style="width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; font-family: inherit;">
+      </div>
+      
+      <button type="submit" style="width: 100%; padding: 16px 24px; background-color: #ff6b00; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: background-color 0.3s ease; margin-top: 10px;">Pay Rs. {{ booking.service.price }} & Confirm</button>
+      
+      <div style="text-align: center; margin-top: 15px;">
+        <i class="fas fa-lock" style="color: #28a745; margin-right: 5px;"></i>
+        <span style="font-size: 0.9rem; color: #777;">Secure 256-bit SSL Encryption</span>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}
