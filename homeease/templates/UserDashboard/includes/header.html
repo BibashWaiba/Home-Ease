@@ -1,0 +1,18 @@
+<div class="topbar">
+  <div>
+    <h1>{{ page_title|default:"Welcome Back!" }}</h1>
+    <p>{{ page_subtitle|default:"Manage your bookings, payments, and account details." }}</p>
+  </div>
+  <div class="actions">
+    <!-- User Profile Quick Link -->
+    <a class="btn" href="{% url 'user_profile' %}">
+      <i class="fas fa-user-circle" style="margin-right: 8px;"></i>
+      {{ request.user.first_name|default:request.user.username }}
+    </a>
+    
+    <!-- Notifications/Quick Action (Optional) -->
+    <a class="btn btn-primary" href="{% url 'services' %}">
+      Book New Service
+    </a>
+  </div>
+</div>

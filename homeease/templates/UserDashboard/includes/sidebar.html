@@ -1,0 +1,26 @@
+{% load static %}
+<aside class="sidebar">
+  <div class="brand">
+    <div>
+      <strong>Home<span>Ease</span></strong>
+      <div class="role">User Panel</div>
+    </div>
+    <span class="pill">User</span>
+  </div>
+
+  <nav class="nav">
+    <a href="{% url 'user_dashboard' %}" class="{% if request.resolver_match.url_name == 'user_dashboard' %}active{% endif %}">
+      <i class="fas fa-calendar-check"></i> My Bookings
+    </a>
+    <a href="{% url 'user_profile' %}" class="{% if request.resolver_match.url_name == 'user_profile' %}active{% endif %}">
+      <i class="fas fa-id-card"></i> Profile Settings
+    </a>
+    <a href="{% url 'home' %}">
+      <i class="fas fa-home"></i> Back to Website
+    </a>
+    <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 10px;"></div>
+    <a href="{% url 'logout' %}" style="color: var(--bad);">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+  </nav>
+</aside>
