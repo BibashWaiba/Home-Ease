@@ -5,14 +5,25 @@
 
   <ul class="nav-links">
     <li><a href="/">Home</a></li>
-    <li><a href="#">Services</a></li>
-    <li><a href="#">About</a></li>
-    <li><a href="#">Contact</a></li>
+    <li><a href="{% url 'services' %}">Services</a></li>
+    <li><a href="{% url 'packages' %}">Packages</a></li>
+    <li><a href="{% url 'about' %}">About</a></li>
+    <li><a href="{% url 'contact_us' %}">Contact</a></li>
   </ul>
 
   <div class="nav-actions">
+    {% if user.is_authenticated %}
+    {% if user.is_staff or user.is_superuser %}
+    <a href="{% url 'admin_dashboard' %}" class="btn-ghost" title="My Account"><i class="fas fa-user-circle"></i></a>
+    {% else %}
+    <a href="{% url 'user_dashboard' %}" class="btn-ghost" title="My Bookings">Bookings</a>
+    <a href="{% url 'user_dashboard' %}" class="btn-ghost" title="My Dashboard"><i class="fas fa-user-circle"></i></a>
+    {% endif %}
+    <a href="{% url 'logout' %}" class="btn-primary">Logout</a>
+    {% else %}
     <a href="{% url 'login' %}" class="btn-ghost">Login</a>
     <a href="{% url 'register' %}" class="btn-primary">Register</a>
+    {% endif %}
   </div>
 
   <button class="hamburger" id="hamburger">
@@ -22,9 +33,19 @@
 
 <div class="mobile-menu" id="mobileMenu">
   <a href="/">Home</a>
-  <a href="#">Services</a>
-  <a href="#">About</a>
-  <a href="#">Contact</a>
-  <a href="#">Login</a>
-  <a href="#" class="btn-primary">Register</a>
+  <a href="{% url 'services' %}">Services</a>
+  <a href="{% url 'packages' %}">Packages</a>
+  <a href="{% url 'about' %}">About</a>
+  <a href="{% url 'contact_us' %}">Contact</a>
+  {% if user.is_authenticated %}
+  {% if user.is_staff or user.is_superuser %}
+  <a href="{% url 'admin_dashboard' %}">Admin Dashboard</a>
+  {% else %}
+  <a href="{% url 'user_dashboard' %}">My Dashboard</a>
+  {% endif %}
+  <a href="{% url 'logout' %}" class="btn-primary">Logout</a>
+  {% else %}
+  <a href="{% url 'login' %}">Login</a>
+  <a href="{% url 'register' %}" class="btn-primary">Register</a>
+  {% endif %}
 </div>
