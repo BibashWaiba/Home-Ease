@@ -1,0 +1,41 @@
+          <div class="booking-card" style="display: flex; justify-content: space-between; align-items: center; padding: 20px; background: white; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.08)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.03)';">
+            <div class="booking-info" style="flex: 1;">
+              <h3 style="font-size: 1.4rem; color: #333; margin-bottom: 8px;">
+                <a href="" style="color: inherit; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#ff6b00'" onmouseout="this.style.color='#333'">{{ booking.service.name }}</a>
+              </h3>
+              <p style="color: #666; margin-bottom: 12px; font-size: 1.05rem;"><i class="fas fa-money-bill-wave" style="color: #28a745; margin-right: 5px;"></i> Rs. {{ booking.service.price }}</p>
+              <div style="display: flex; gap: 20px; color: #555; font-size: 0.95rem;">
+                <span><i class="far fa-calendar-alt" style="color: #ff6b00; margin-right: 5px;"></i> {{ booking.date }}</span>
+                <span><i class="far fa-clock" style="color: #ff6b00; margin-right: 5px;"></i> {{ booking.time }}</span>
+              </div>
+            </div>
+            
+            <div class="booking-status" style="text-align: right;">
+              <span style="display: inline-block; padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 0.95rem; 
+                {% if booking.status == 'Pending' %}background-color: #fff3cd; color: #856404;
+                {% elif booking.status == 'Confirmed' %}background-color: #d4edda; color: #155724;
+                {% elif booking.status == 'Completed' %}background-color: #cce5ff; color: #004085;
+                {% elif booking.status == 'Cancelled' %}background-color: #f8d7da; color: #721c24;
+                {% endif %}
+              ">
+                {{ booking.status }}
+              </span>
+              <div style="margin-top: 15px; font-size: 0.9rem; color: #999;">
+                Booked on: {{ booking.created_at|date:"M d, Y" }}
+              </div>
+              
+              <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: flex-end;">
+                {% if booking.status == 'Pending' %}
+                  <a href="{% url 'payment' booking.id %}" style="padding: 6px 14px; background-color: #60bb46; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 0.9rem; transition: background-color 0.3s ease; display: inline-flex; align-items: center; justify-content: center;" onmouseover="this.style.backgroundColor='#4c9438';" onmouseout="this.style.backgroundColor='#60bb46';">Pay with eSewa</a>
+                {% endif %}
+                
+                {% if booking.status == 'Pending' %}
+                  <button type="button" onclick="confirmCancel('{% url 'cancel_booking' booking.id %}')" style="padding: 6px 14px; background-color: transparent; color: #dc3545; border: 1px solid #dc3545; border-radius: 6px; font-weight: 500; cursor: pointer; font-size: 0.9rem; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#dc3545'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#dc3545';">Cancel</button>
+                {% endif %}
+
+                {% if booking.status == 'Confirmed' or booking.status == 'Completed' %}
+                  <button type="button" onclick="openReviewModal('{% url 'submit_review' booking.service.id %}?next={{ request.path }}', '{{ booking.service.name|escapejs }}')" style="padding: 6px 14px; background-color: #333; color: white; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; font-size: 0.9rem; transition: background-color 0.3s ease;" onmouseover="this.style.backgroundColor='#111';" onmouseout="this.style.backgroundColor='#333';"><i class="fas fa-star" style="color: #ffc107; margin-right: 5px;"></i> Write Review</button>
+                {% endif %}
+              </div>
+            </div>
+          </div>
