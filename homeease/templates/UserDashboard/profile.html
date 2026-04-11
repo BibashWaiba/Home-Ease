@@ -1,0 +1,149 @@
+{% extends 'UserDashboard/base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<section class="grid">
+  
+  <!-- Profile Stats / Avatar -->
+  <div class="panel" style="grid-column: span 4; text-align: center;">
+    <div style="width: 100px; height: 100px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 700; margin: 0 auto 20px;">
+      {{ user.username|first|upper }}
+    </div>
+    <h3 style="margin-bottom: 5px; color: var(--text); font-size: 1.4rem;">{{ user.get_full_name|default:user.username }}</h3>
+    <p style="color: var(--muted); font-size: 0.95rem; margin-bottom: 25px;">Member since {{ user.date_joined|date:"M Y" }}</p>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 25px;">
+      <div style="text-align: center;">
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--text);">{{ total_bookings|default:0 }}</div>
+        <div style="font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;">Bookings</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--good);">{{ confirmed_bookings|default:0 }}</div>
+        <div style="font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;">Completed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forms Area -->
+  <div style="grid-column: span 8; display: flex; flex-direction: column; gap: 20px;">
+    
+    <!-- Update Info Form -->
+    <div class="panel" style="grid-column: span 12;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+        <h2 style="margin: 0;">Personal Information</h2>
+        <button type="button" id="editProfileBtn" class="btn btn-secondary" onclick="enableEditing()" style="padding: 5px 15px; font-size: 0.9rem; background: var(--border); color: var(--text);">Edit Profile</button>
+      </div>
+      <div class="sub">Update your contact details and basic information.</div>
+      
+      <form method="POST" action="{% url 'user_profile' %}" id="profileForm">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_info">
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" name="first_name" value="{{ user.first_name }}" class="profile-input" readonly>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" name="last_name" value="{{ user.last_name }}" class="profile-input" readonly>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" name="email" value="{{ user.email }}" class="profile-input" required readonly>
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="text" name="phone_numberr" value="{{ user.phone_numberr|default:'' }}" class="profile-input" readonly>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Gender</label>
+          <div style="display: flex; gap: 20px;">
+            <label style="display: flex; align-items: center; cursor: pointer; font-weight: 400;">
+              <input type="radio" name="gender" value="male" {% if user.gender == 'male' %}checked{% endif %} style="margin-right: 8px; width: auto; accent-color: var(--primary);" class="profile-radio" disabled> Male
+            </label>
+            <label style="display: flex; align-items: center; cursor: pointer; font-weight: 400;">
+              <input type="radio" name="gender" value="female" {% if user.gender == 'female' %}checked{% endif %} style="margin-right: 8px; width: auto; accent-color: var(--primary);" class="profile-radio" disabled> Female
+            </label>
+            <label style="display: flex; align-items: center; cursor: pointer; font-weight: 400;">
+              <input type="radio" name="gender" value="other" {% if user.gender == 'other' %}checked{% endif %} style="margin-right: 8px; width: auto; accent-color: var(--primary);" class="profile-radio" disabled> Other
+            </label>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Address</label>
+          <textarea name="address" rows="3" class="profile-input" readonly>{{ user.address|default:'' }}</textarea>
+        </div>
+        
+        <button type="submit" id="saveProfileBtn" class="btn btn-primary" style="display: none;">Save Changes</button>
+      </form>
+    </div>
+
+    <!-- Change Password Form -->
+    <div class="panel" style="grid-column: span 12; background: var(--panel2);">
+      <h2>Change Password</h2>
+      <div class="sub">Ensure your account is using a long, random password to stay secure.</div>
+      
+      <form method="POST" action="{% url 'user_profile' %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="change_password">
+        
+        <div class="form-group">
+          <label>Current Password</label>
+          <input type="password" name="current_password" required>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" name="new_password1" required>
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <input type="password" name="new_password2" required>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn" style="background: var(--text); color: var(--panel);">Update Password</button>
+      </form>
+    </div>
+    
+  </div>
+
+</section>
+
+<script>
+function enableEditing() {
+    // Remove readonly from inputs and textareas
+    document.querySelectorAll('.profile-input').forEach(el => {
+        el.removeAttribute('readonly');
+        el.style.backgroundColor = 'var(--panel)'; 
+        el.style.border = '1px solid var(--border)';
+    });
+    
+    // Remove disabled from radios
+    document.querySelectorAll('.profile-radio').forEach(el => {
+        el.removeAttribute('disabled');
+    });
+    
+    // Hide Edit button, show Save button
+    document.getElementById('editProfileBtn').style.display = 'none';
+    document.getElementById('saveProfileBtn').style.display = 'block';
+}
+
+// Initial styling for readonly elements
+window.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.profile-input').forEach(el => {
+        el.style.backgroundColor = 'transparent';
+        el.style.border = '1px dashed var(--border)';
+    });
+});
+</script>
+{% endblock %}
