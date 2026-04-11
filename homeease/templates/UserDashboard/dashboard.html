@@ -1,202 +1,169 @@
-<!-- USER DASHBOARD (user_dashboard.html) -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>User Dashboard</title>
-  <style>
-    :root{
-      --bg:#0b1220; --panel: rgba(255,255,255,.06); --panel2: rgba(0,0,0,.18);
-      --text:#eaf0ff; --muted: rgba(234,240,255,.7); --border: rgba(255,255,255,.12);
-      --primary:#4f7cff; --good:#22c55e; --warn:#f59e0b; --bad:#ef4444; --radius:16px;
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:
-        radial-gradient(900px circle at 10% 10%, rgba(79,124,255,.25), transparent 55%),
-        radial-gradient(900px circle at 90% 10%, rgba(34,197,94,.18), transparent 55%),
-        linear-gradient(180deg, #0b1220, #070b14);
-      color:var(--text);min-height:100vh
-    }
-    a{color:inherit;text-decoration:none}
-    .wrap{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
-    @media (max-width:980px){.wrap{grid-template-columns:1fr}.sidebar{position:static;height:auto}}
+{% extends 'UserDashboard/base.html' %}
 
-    .sidebar{
-      position:sticky;top:0;height:100vh;padding:18px;
-      border-right:1px solid var(--border);
-      background:rgba(7,11,20,.55);backdrop-filter:blur(10px)
-    }
-    .brand{
-      padding:12px;border:1px solid var(--border);border-radius:var(--radius);
-      background:var(--panel);margin-bottom:14px
-    }
-    .brand strong{letter-spacing:.3px}
-    .role{font-size:12px;color:var(--muted);margin-top:2px}
-    .pill{font-size:12px;padding:3px 8px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted)}
-    .nav{display:grid;gap:8px;margin-top:10px}
-    .nav a{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-      padding:12px;border-radius:14px;color:var(--muted);border:1px solid transparent;transition:.15s ease
-    }
-    .nav a:hover{border-color:var(--border);background:rgba(255,255,255,.05);color:var(--text);transform:translateY(-1px)}
+{% block title %}My Dashboard{% endblock %}
 
-    .main{padding:18px}
-    .topbar{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--panel)
-    }
-    .topbar h1{font-size:18px;margin-bottom:2px}
-    .topbar p{font-size:13px;color:var(--muted)}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;
-      padding:10px 12px;border-radius:12px;border:1px solid var(--border);
-      background:transparent;color:var(--text);font-weight:600;cursor:pointer;transition:.15s ease;white-space:nowrap
-    }
-    .btn:hover{transform:translateY(-1px)}
-    .btn-primary{background:linear-gradient(135deg,var(--primary),#7c5cff);border-color:transparent}
-
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:14px}
-    .card{
-      grid-column:span 4;padding:16px;border-radius:var(--radius);
-      border:1px solid var(--border);background:var(--panel);min-height:92px
-    }
-    @media (max-width:980px){.card{grid-column:span 12}}
-    .card .k{font-size:13px;color:var(--muted)}
-    .card .v{font-size:22px;font-weight:800;margin-top:6px}
-    .card .s{font-size:12px;color:var(--muted);margin-top:8px}
-
-    .panel{
-      grid-column:span 8;padding:16px;border-radius:var(--radius);
-      border:1px solid var(--border);background:var(--panel)
-    }
-    .panel2{
-      grid-column:span 4;padding:16px;border-radius:var(--radius);
-      border:1px solid var(--border);background:var(--panel)
-    }
-    @media (max-width:980px){.panel,.panel2{grid-column:span 12}}
-    .panel h2,.panel2 h2{font-size:16px;margin-bottom:10px}
-    .sub{color:var(--muted);font-size:13px;margin-bottom:12px}
-
-    table{
-      width:100%;border-collapse:collapse;overflow:hidden;border-radius:12px;
-      border:1px solid rgba(255,255,255,.10);background:var(--panel2)
-    }
-    th,td{padding:10px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
-    th{color:var(--muted);font-weight:700;background:rgba(255,255,255,.03)}
-    tr:last-child td{border-bottom:none}
-
-    .tag{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid var(--border);color:var(--muted);background:rgba(255,255,255,.04)}
-    .tag.good{border-color:rgba(34,197,94,.35);color:rgba(170,255,206,.95)}
-    .tag.warn{border-color:rgba(245,158,11,.35);color:rgba(255,228,166,.95)}
-    .tag.bad{border-color:rgba(239,68,68,.35);color:rgba(255,180,180,.95)}
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <aside class="sidebar">
-      <div class="brand">
-        <strong>ServiceProvider</strong>
-        <div class="role">User Dashboard</div>
-      </div>
-
-      <nav class="nav">
-        <a href="#">Overview <span class="pill">Home</span></a>
-        <a href="#">Browse services <span class="pill">New</span></a>
-        <a href="#">My bookings <span class="pill">3</span></a>
-        <a href="#">Profile <span class="pill">Edit</span></a>
-        <a href="#">Logout <span class="pill">Exit</span></a>
-      </nav>
-    </aside>
-
-    <main class="main">
-      <div class="topbar">
-        <div>
-          <h1>Welcome, User</h1>
-          <p>Manage bookings, track statuses, and update profile.</p>
-        </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <a class="btn" href="#">View website</a>
-          <a class="btn btn-primary" href="#">Book a service</a>
-        </div>
-      </div>
-
-      <section class="grid">
-        <div class="card">
-          <div class="k">Total bookings</div>
-          <div class="v">12</div>
-          <div class="s">All time bookings created.</div>
-        </div>
-
-        <div class="card">
-          <div class="k">Active bookings</div>
-          <div class="v">2</div>
-          <div class="s">Pending / in progress.</div>
-        </div>
-
-        <div class="card">
-          <div class="k">Completed</div>
-          <div class="v">10</div>
-          <div class="s">Finished successfully.</div>
-        </div>
-
-        <div class="panel">
-          <h2>My recent bookings</h2>
-          <div class="sub">Latest bookings and their status.</div>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Service</th>
-                <th>Status</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>#221</td>
-                <td>Cleaning</td>
-                <td><span class="tag warn">Pending</span></td>
-                <td>2025-12-19</td>
-              </tr>
-              <tr>
-                <td>#220</td>
-                <td>Plumber</td>
-                <td><span class="tag good">Completed</span></td>
-                <td>2025-12-18</td>
-              </tr>
-              <tr>
-                <td>#219</td>
-                <td>Electrician</td>
-                <td><span class="tag bad">Cancelled</span></td>
-                <td>2025-12-17</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="panel2">
-          <h2>Quick actions</h2>
-          <div class="sub">Common tasks.</div>
-          <div class="quick" style="display:grid;gap:10px">
-            <a class="qbtn" style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.18)" href="#">
-              <div><strong>Browse services</strong><br><span style="color:var(--muted);font-size:12px">Find a provider</span></div>
-              <span class="pill">Open</span>
-            </a>
-            <a class="qbtn" style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.18)" href="#">
-              <div><strong>My bookings</strong><br><span style="color:var(--muted);font-size:12px">Track requests</span></div>
-              <span class="pill">Open</span>
-            </a>
-            <a class="qbtn" style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.18)" href="#">
-              <div><strong>Edit profile</strong><br><span style="color:var(--muted);font-size:12px">Update details</span></div>
-              <span class="pill">Open</span>
-            </a>
-          </div>
-        </div>
-      </section>
-    </main>
+{% block content %}
+<section class="grid">
+  <!-- Status Cards -->
+  <div class="panel" style="grid-column: span 12; display: flex; gap: 20px; justify-content: space-between; padding: 0; background: transparent; border: none; box-shadow: none;">
+    <div style="flex: 1; padding: 20px; background: var(--panel); border-radius: var(--custom-radius); border: 1px solid var(--border); box-shadow: var(--shadow);">
+      <h3 style="font-size: 1.5rem; color: var(--text);">{{ pending_bookings.count }}</h3>
+      <p style="color: var(--muted); font-size: 0.9rem; font-weight: 600;">Pending Bookings</p>
+    </div>
+    <div style="flex: 1; padding: 20px; background: var(--panel); border-radius: var(--custom-radius); border: 1px solid var(--border); box-shadow: var(--shadow);">
+      <h3 style="font-size: 1.5rem; color: var(--text);">{{ confirmed_bookings.count }}</h3>
+      <p style="color: var(--muted); font-size: 0.9rem; font-weight: 600;">Confirmed Bookings</p>
+    </div>
+    <div style="flex: 1; padding: 20px; background: var(--panel); border-radius: var(--custom-radius); border: 1px solid var(--border); box-shadow: var(--shadow);">
+      <h3 style="font-size: 1.5rem; color: var(--text);">{{ cancelled_bookings.count }}</h3>
+      <p style="color: var(--muted); font-size: 0.9rem; font-weight: 600;">Cancelled</p>
+    </div>
   </div>
-</body>
-</html>
+
+  <!-- Main Booking Area -->
+  <div class="panel" style="grid-column: span 12;">
+    <h2>Bookings History</h2>
+    
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab(event, 'pending')">Pending ({{ pending_bookings.count }})</button>
+      <button class="tab-btn" onclick="showTab(event, 'confirmed')">Confirmed ({{ confirmed_bookings.count }})</button>
+      <button class="tab-btn" onclick="showTab(event, 'cancelled')">Cancelled ({{ cancelled_bookings.count }})</button>
+    </div>
+
+    <div class="booking-list" style="display: flex; flex-direction: column; gap: 20px;">
+      
+      <!-- Pending Tab -->
+      <div id="pending" class="tab-content" style="display: block;">
+        {% if pending_bookings %}
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            {% for booking in pending_bookings %}
+              {% include 'UserDashboard/_booking_card.html' with booking=booking %}
+            {% endfor %}
+          </div>
+        {% else %}
+          <div style="text-align: center; padding: 60px 20px;">
+            <i class="fas fa-calendar-minus" style="font-size: 3rem; color: var(--border); margin-bottom: 15px;"></i>
+            <h3 style="color: #555; font-size: 1.1rem;">No pending bookings</h3>
+            <p style="color: var(--muted); font-size: 0.95rem; margin-top: 5px;">You do not have any bookings waiting for payment or confirmation.</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Confirmed Tab -->
+      <div id="confirmed" class="tab-content" style="display: none;">
+        {% if confirmed_bookings %}
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            {% for booking in confirmed_bookings %}
+              {% include 'UserDashboard/_booking_card.html' with booking=booking %}
+            {% endfor %}
+          </div>
+        {% else %}
+          <div style="text-align: center; padding: 60px 20px;">
+            <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--border); margin-bottom: 15px;"></i>
+            <h3 style="color: #555; font-size: 1.1rem;">No confirmed bookings</h3>
+            <p style="color: var(--muted); font-size: 0.95rem; margin-top: 5px;">When you complete a payment, your booking will appear here.</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Cancelled Tab -->
+      <div id="cancelled" class="tab-content" style="display: none;">
+        {% if cancelled_bookings %}
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            {% for booking in cancelled_bookings %}
+              {% include 'UserDashboard/_booking_card.html' with booking=booking %}
+            {% endfor %}
+          </div>
+        {% else %}
+          <div style="text-align: center; padding: 60px 20px;">
+            <i class="fas fa-ban" style="font-size: 3rem; color: var(--border); margin-bottom: 15px;"></i>
+            <h3 style="color: #555; font-size: 1.1rem;">No cancelled bookings</h3>
+            <p style="color: var(--muted); font-size: 0.95rem; margin-top: 5px;">You have no cancelled bookings history.</p>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Custom Confirmation Modal -->
+<div id="cancelModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+  <div class="modal-content" style="background: var(--panel); padding: 40px 30px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: fadeIn 0.3s ease-out;">
+    <i class="fas fa-exclamation-circle" style="font-size: 3.5rem; color: var(--bad); margin-bottom: 20px;"></i>
+    <h3 style="margin-bottom: 15px; color: var(--text); font-size: 1.5rem;">Cancel Booking?</h3>
+    <p style="color: var(--muted); margin-bottom: 30px; line-height: 1.5; font-size: 1.05rem;">Are you absolutely sure you want to cancel this booking? This action cannot be undone.</p>
+    <div style="display: flex; gap: 15px; justify-content: center;">
+      <button type="button" onclick="closeModal()" class="btn">No, Keep it</button>
+      <form id="cancelForm" method="POST" action="" style="margin: 0; flex: 1; display: flex;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary" style="background: var(--bad); border-color: var(--bad); width: 100%;">Yes, Cancel</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Review Modal -->
+<div id="reviewModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+  <div class="modal-content" style="background: var(--panel); padding: 40px 30px; border-radius: 12px; max-width: 500px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: fadeIn 0.3s ease-out; position: relative;">
+    <button type="button" onclick="closeReviewModal()" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; font-size: 1.5rem; color: var(--muted); cursor: pointer; transition: color 0.2s;">&times;</button>
+    <h3 style="margin-bottom: 25px; color: var(--text); font-size: 1.5rem; text-align: center;">Review <span id="reviewServiceName" style="color: var(--primary);"></span></h3>
+    <form id="reviewForm" method="POST" action="" style="display: flex; flex-direction: column; gap: 20px;">
+      {% csrf_token %}
+      <div class="form-group" style="margin-bottom: 0;">
+        <label for="modalRating">Rating</label>
+        <select id="modalRating" name="rating" required>
+          <option value="" disabled selected>Select a rating...</option>
+          <option value="5">⭐⭐⭐⭐⭐ (5 - Excellent)</option>
+          <option value="4">⭐⭐⭐⭐ (4 - Very Good)</option>
+          <option value="3">⭐⭐⭐ (3 - Average)</option>
+          <option value="2">⭐⭐ (2 - Poor)</option>
+          <option value="1">⭐ (1 - Terrible)</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom: 0;">
+        <label for="modalComment">Comment</label>
+        <textarea id="modalComment" name="comment" rows="4" required placeholder="Share your experience..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Post Review</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function showTab(event, tabId) {
+    document.querySelectorAll('.tab-content').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+      btn.classList.remove('active');
+    });
+    
+    document.getElementById(tabId).style.display = 'block';
+    event.currentTarget.classList.add('active');
+  }
+
+  function confirmCancel(url) {
+    document.getElementById('cancelForm').action = url;
+    document.getElementById('cancelModal').style.display = 'flex';
+  }
+  
+  function closeModal() {
+    document.getElementById('cancelModal').style.display = 'none';
+  }
+  
+  function openReviewModal(actionUrl, serviceName) {
+    document.getElementById('reviewForm').action = actionUrl;
+    document.getElementById('reviewServiceName').innerText = serviceName;
+    document.getElementById('reviewModal').style.display = 'flex';
+  }
+  
+  function closeReviewModal() {
+    document.getElementById('reviewModal').style.display = 'none';
+  }
+</script>
+{% endblock %}
