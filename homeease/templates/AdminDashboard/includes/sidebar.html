@@ -1,0 +1,38 @@
+{% load static %}
+<aside class="sidebar">
+  <div class="brand">
+    <div>
+      <strong>Home<span style="color: var(--primary);">Ease</span></strong>
+      <div class="role">Admin Dashboard</div>
+    </div>
+    <span class="pill">Admin</span>
+  </div>
+
+  <nav class="nav">
+    <a href="{% url 'admin_dashboard' %}" class="{% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+      Overview <span class="pill">Home</span>
+    </a>
+    <a href="{% url 'user_list' %}" class="{% if 'user' in request.resolver_match.url_name %}active{% endif %}">
+      Users <span class="pill">Manage</span>
+    </a>
+    <a href="{% url 'category_list' %}" class="{% if 'category' in request.resolver_match.url_name %}active{% endif %}">
+      Categories <span class="pill">Manage</span>
+    </a>
+    <a href="{% url 'service_list' %}" class="{% if 'service' in request.resolver_match.url_name %}active{% endif %}">
+      Services <span class="pill">Manage</span>
+    </a>
+    <a href="{% url 'package_list' %}" class="{% if 'package' in request.resolver_match.url_name %}active{% endif %}">
+      Packages <span class="pill">Bundles</span>
+    </a>
+    <a href="{% url 'booking_list' %}" class="{% if 'booking' in request.resolver_match.url_name %}active{% endif %}">
+      Bookings <span class="pill">Track</span>
+    </a>
+    <a href="{% url 'home' %}">
+      View Website <span class="pill">Public</span>
+    </a>
+    <div style="margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border);"></div>
+    <a href="{% url 'logout' %}" style="color: var(--bad);">
+      Logout <span class="pill" style="background: var(--bad-bg); color: var(--bad); border-color: var(--bad-border);">Exit</span>
+    </a>
+  </nav>
+</aside>

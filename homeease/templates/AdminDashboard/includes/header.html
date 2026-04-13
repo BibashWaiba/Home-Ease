@@ -1,0 +1,10 @@
+<div class="topbar">
+  <div>
+    <h1>{{ page_title|default:"Dashboard" }}</h1>
+    <p>{{ page_subtitle|default:"Monitor users, providers, services and bookings." }}</p>
+  </div>
+  <div class="actions">
+    <a class="btn" href="{% url 'home' %}">View Website</a>
+    <a class="btn btn-primary" href="{% url 'booking_list' %}">Manage Bookings</a>
+  </div>
+</div>
