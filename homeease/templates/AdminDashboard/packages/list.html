@@ -1,0 +1,37 @@
+{% extends 'AdminDashboard/base.html' %}
+{% block title %}Manage Packages{% endblock %}
+{% block content %}
+<div class="header">
+  <h2 class="header-title">Manage Packages</h2>
+  <a href="{% url 'admin_packages_create' %}" class="btn btn-primary">+ Add Package</a>
+</div>
+<div class="table-responsive" style="margin-top: 20px;">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Package Name</th>
+        <th>Combo Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.id }}</td>
+        <td>{{ item.name }}</td>
+        <td>Rs. {{ item.combo_price }}</td>
+        <td class="action-btns">
+          <a href="{% url 'admin_packages_update' item.pk %}" class="btn btn-sm" style="background: var(--light2); padding: 5px 10px; border-radius: 4px; text-decoration: none; color: var(--text);">Edit</a>
+          <a href="{% url 'admin_packages_delete' item.pk %}" class="btn btn-sm" style="background: #ffebee; color: #c62828; padding: 5px 10px; border-radius: 4px; text-decoration: none;">Delete</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" style="text-align: center; padding: 20px; color: var(--muted);">No packages found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
