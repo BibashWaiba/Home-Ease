@@ -52,3 +52,12 @@ class CustomUser(AbstractUser):
     def get_short_name(self):
         """Return the short name for the user."""
         return self.first_name
+
+class PasswordResetOTP(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"OTP for {self.user.username}"
