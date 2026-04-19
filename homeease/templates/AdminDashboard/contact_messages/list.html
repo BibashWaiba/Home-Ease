@@ -1,0 +1,43 @@
+{% extends 'AdminDashboard/base.html' %}
+{% block title %}Contact Messages{% endblock %}
+{% block content %}
+<div class="header">
+  <h2 class="header-title">Contact Messages</h2>
+</div>
+<div class="table-responsive" style="margin-top: 20px;">
+  <table style="width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th style="text-align: left; padding: 12px; border-bottom: 2px solid #eee;">ID</th>
+        <th style="text-align: left; padding: 12px; border-bottom: 2px solid #eee;">Sender</th>
+        <th style="text-align: left; padding: 12px; border-bottom: 2px solid #eee;">Email</th>
+        <th style="text-align: left; padding: 12px; border-bottom: 2px solid #eee;">Subject</th>
+        <th style="text-align: left; padding: 12px; border-bottom: 2px solid #eee;">Message</th>
+        <th style="text-align: left; padding: 12px; border-bottom: 2px solid #eee;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 12px;">{{ item.id }}</td>
+        <td style="padding: 12px; font-weight: 600;">{{ item.name }}</td>
+        <td style="padding: 12px;">{{ item.email }}</td>
+        <td style="padding: 12px;">{{ item.subject }}</td>
+        <td style="padding: 12px;">
+            <div style="max-width: 300px; max-height: 100px; overflow-y: auto; font-size: 0.9rem; color: #555;">
+                {{ item.message|linebreaks }}
+            </div>
+        </td>
+        <td class="action-btns" style="padding: 12px;">
+          <a href="{% url 'admin_contact_messages_delete' item.pk %}" class="btn btn-sm" style="background: #fef2f2; color: #991b1b; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 0.85rem; font-weight: 500;">Delete</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" style="text-align: center; padding: 40px; color: #94a3b8;">No contact messages found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
