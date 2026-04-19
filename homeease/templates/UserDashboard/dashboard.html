@@ -1,169 +1,116 @@
 {% extends 'UserDashboard/base.html' %}
+{% load static %}
 
-{% block title %}My Dashboard{% endblock %}
+{% block title %}My Dashboard - Home Ease{% endblock %}
 
 {% block content %}
-<section class="grid">
-  <!-- Status Cards -->
-  <div class="panel" style="grid-column: span 12; display: flex; gap: 20px; justify-content: space-between; padding: 0; background: transparent; border: none; box-shadow: none;">
-    <div style="flex: 1; padding: 20px; background: var(--panel); border-radius: var(--custom-radius); border: 1px solid var(--border); box-shadow: var(--shadow);">
-      <h3 style="font-size: 1.5rem; color: var(--text);">{{ pending_bookings.count }}</h3>
-      <p style="color: var(--muted); font-size: 0.9rem; font-weight: 600;">Pending Bookings</p>
-    </div>
-    <div style="flex: 1; padding: 20px; background: var(--panel); border-radius: var(--custom-radius); border: 1px solid var(--border); box-shadow: var(--shadow);">
-      <h3 style="font-size: 1.5rem; color: var(--text);">{{ confirmed_bookings.count }}</h3>
-      <p style="color: var(--muted); font-size: 0.9rem; font-weight: 600;">Confirmed Bookings</p>
-    </div>
-    <div style="flex: 1; padding: 20px; background: var(--panel); border-radius: var(--custom-radius); border: 1px solid var(--border); box-shadow: var(--shadow);">
-      <h3 style="font-size: 1.5rem; color: var(--text);">{{ cancelled_bookings.count }}</h3>
-      <p style="color: var(--muted); font-size: 0.9rem; font-weight: 600;">Cancelled</p>
-    </div>
-  </div>
-
-  <!-- Main Booking Area -->
-  <div class="panel" style="grid-column: span 12;">
-    <h2>Bookings History</h2>
-    
-    <div class="tabs">
-      <button class="tab-btn active" onclick="showTab(event, 'pending')">Pending ({{ pending_bookings.count }})</button>
-      <button class="tab-btn" onclick="showTab(event, 'confirmed')">Confirmed ({{ confirmed_bookings.count }})</button>
-      <button class="tab-btn" onclick="showTab(event, 'cancelled')">Cancelled ({{ cancelled_bookings.count }})</button>
+<div style="padding: 40px;">
+    <!-- Dashboard Stats Bar -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-bottom: 40px;">
+        <div class="booking-card" style="padding: 20px; display: flex; align-items: center; gap: 20px;">
+            <div>
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Total Bookings</div>
+                <div style="font-size: 1.5rem; font-weight: 800;">{{ confirmed_bookings|length }}</div>
+            </div>
+        </div>
+        <div class="booking-card" style="padding: 20px; display: flex; align-items: center; gap: 20px;">
+            <div>
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Pending</div>
+                <div style="font-size: 1.5rem; font-weight: 800;">{{ pending_bookings|length }}</div>
+            </div>
+        </div>
+        <div class="booking-card" style="padding: 20px; display: flex; align-items: center; gap: 20px;">
+            <div>
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Completed</div>
+                <div style="font-size: 1.5rem; font-weight: 800;">{{ completed_bookings|length }}</div>
+            </div>
+        </div>
     </div>
 
-    <div class="booking-list" style="display: flex; flex-direction: column; gap: 20px;">
-      
-      <!-- Pending Tab -->
-      <div id="pending" class="tab-content" style="display: block;">
-        {% if pending_bookings %}
-          <div style="display: flex; flex-direction: column; gap: 20px;">
-            {% for booking in pending_bookings %}
-              {% include 'UserDashboard/_booking_card.html' with booking=booking %}
-            {% endfor %}
-          </div>
-        {% else %}
-          <div style="text-align: center; padding: 60px 20px;">
-            <i class="fas fa-calendar-minus" style="font-size: 3rem; color: var(--border); margin-bottom: 15px;"></i>
-            <h3 style="color: #555; font-size: 1.1rem;">No pending bookings</h3>
-            <p style="color: var(--muted); font-size: 0.95rem; margin-top: 5px;">You do not have any bookings waiting for payment or confirmation.</p>
-          </div>
-        {% endif %}
-      </div>
+    <!-- Bookings Section -->
+    <div class="profile-card" style="padding: 30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h2 style="font-size: 1.4rem; font-weight: 800;">My Appointments</h2>
+            <a href="{% url 'services' %}" class="btn btn-primary" style="font-size: 0.85rem;">+ New Booking</a>
+        </div>
 
-      <!-- Confirmed Tab -->
-      <div id="confirmed" class="tab-content" style="display: none;">
-        {% if confirmed_bookings %}
-          <div style="display: flex; flex-direction: column; gap: 20px;">
-            {% for booking in confirmed_bookings %}
-              {% include 'UserDashboard/_booking_card.html' with booking=booking %}
-            {% endfor %}
-          </div>
-        {% else %}
-          <div style="text-align: center; padding: 60px 20px;">
-            <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--border); margin-bottom: 15px;"></i>
-            <h3 style="color: #555; font-size: 1.1rem;">No confirmed bookings</h3>
-            <p style="color: var(--muted); font-size: 0.95rem; margin-top: 5px;">When you complete a payment, your booking will appear here.</p>
-          </div>
-        {% endif %}
-      </div>
+        <!-- Tab System -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('pending')">Pending ({{ pending_bookings|length }})</button>
+            <button class="tab-btn" onclick="switchTab('confirmed')">Confirmed ({{ confirmed_bookings|length }})</button>
+            <button class="tab-btn" onclick="switchTab('completed')">Completed ({{ completed_bookings|length }})</button>
+            <button class="tab-btn" onclick="switchTab('cancelled')">Cancelled ({{ cancelled_bookings|length }})</button>
+        </div>
 
-      <!-- Cancelled Tab -->
-      <div id="cancelled" class="tab-content" style="display: none;">
-        {% if cancelled_bookings %}
-          <div style="display: flex; flex-direction: column; gap: 20px;">
-            {% for booking in cancelled_bookings %}
-              {% include 'UserDashboard/_booking_card.html' with booking=booking %}
-            {% endfor %}
-          </div>
-        {% else %}
-          <div style="text-align: center; padding: 60px 20px;">
-            <i class="fas fa-ban" style="font-size: 3rem; color: var(--border); margin-bottom: 15px;"></i>
-            <h3 style="color: #555; font-size: 1.1rem;">No cancelled bookings</h3>
-            <p style="color: var(--muted); font-size: 0.95rem; margin-top: 5px;">You have no cancelled bookings history.</p>
-          </div>
-        {% endif %}
-      </div>
+        <!-- Tab Content Containers -->
+        <div id="pending" class="tab-content" style="display: block;">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                {% for booking in pending_bookings %}
+                    {% include 'UserDashboard/_booking_card.html' with booking=booking %}
+                {% empty %}
+                    <div style="text-align: center; padding: 60px 0; color: var(--text-muted);">
+                        <p style="font-weight: 600;">No pending bookings found.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
 
+        <div id="confirmed" class="tab-content" style="display: none;">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                {% for booking in confirmed_bookings %}
+                    {% include 'UserDashboard/_booking_card.html' with booking=booking %}
+                {% empty %}
+                    <div style="text-align: center; padding: 60px 0; color: var(--text-muted);">
+                        <p style="font-weight: 600;">No confirmed bookings yet.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div id="completed" class="tab-content" style="display: none;">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                {% for booking in completed_bookings %}
+                    {% include 'UserDashboard/_booking_card.html' with booking=booking %}
+                {% empty %}
+                    <div style="text-align: center; padding: 60px 0; color: var(--text-muted);">
+                        <p style="font-weight: 600;">No completed history.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div id="cancelled" class="tab-content" style="display: none;">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                {% for booking in cancelled_bookings %}
+                    {% include 'UserDashboard/_booking_card.html' with booking=booking %}
+                {% empty %}
+                    <div style="text-align: center; padding: 60px 0; color: var(--text-muted);">
+                        <p style="font-weight: 600;">No cancelled bookings.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-  </div>
-</section>
-
-<!-- Custom Confirmation Modal -->
-<div id="cancelModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
-  <div class="modal-content" style="background: var(--panel); padding: 40px 30px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: fadeIn 0.3s ease-out;">
-    <i class="fas fa-exclamation-circle" style="font-size: 3.5rem; color: var(--bad); margin-bottom: 20px;"></i>
-    <h3 style="margin-bottom: 15px; color: var(--text); font-size: 1.5rem;">Cancel Booking?</h3>
-    <p style="color: var(--muted); margin-bottom: 30px; line-height: 1.5; font-size: 1.05rem;">Are you absolutely sure you want to cancel this booking? This action cannot be undone.</p>
-    <div style="display: flex; gap: 15px; justify-content: center;">
-      <button type="button" onclick="closeModal()" class="btn">No, Keep it</button>
-      <form id="cancelForm" method="POST" action="" style="margin: 0; flex: 1; display: flex;">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-primary" style="background: var(--bad); border-color: var(--bad); width: 100%;">Yes, Cancel</button>
-      </form>
-    </div>
-  </div>
 </div>
 
-<!-- Review Modal -->
-<div id="reviewModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
-  <div class="modal-content" style="background: var(--panel); padding: 40px 30px; border-radius: 12px; max-width: 500px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: fadeIn 0.3s ease-out; position: relative;">
-    <button type="button" onclick="closeReviewModal()" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; font-size: 1.5rem; color: var(--muted); cursor: pointer; transition: color 0.2s;">&times;</button>
-    <h3 style="margin-bottom: 25px; color: var(--text); font-size: 1.5rem; text-align: center;">Review <span id="reviewServiceName" style="color: var(--primary);"></span></h3>
-    <form id="reviewForm" method="POST" action="" style="display: flex; flex-direction: column; gap: 20px;">
-      {% csrf_token %}
-      <div class="form-group" style="margin-bottom: 0;">
-        <label for="modalRating">Rating</label>
-        <select id="modalRating" name="rating" required>
-          <option value="" disabled selected>Select a rating...</option>
-          <option value="5">⭐⭐⭐⭐⭐ (5 - Excellent)</option>
-          <option value="4">⭐⭐⭐⭐ (4 - Very Good)</option>
-          <option value="3">⭐⭐⭐ (3 - Average)</option>
-          <option value="2">⭐⭐ (2 - Poor)</option>
-          <option value="1">⭐ (1 - Terrible)</option>
-        </select>
-      </div>
-      <div class="form-group" style="margin-bottom: 0;">
-        <label for="modalComment">Comment</label>
-        <textarea id="modalComment" name="comment" rows="4" required placeholder="Share your experience..."></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary">Post Review</button>
-    </form>
-  </div>
-</div>
-
-{% endblock %}
-
-{% block extra_js %}
 <script>
-  function showTab(event, tabId) {
-    document.querySelectorAll('.tab-content').forEach(function(el) {
-      el.style.display = 'none';
+function switchTab(tabId) {
+    // Hide all tab content
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.style.display = 'none';
     });
     
-    document.querySelectorAll('.tab-btn').forEach(function(btn) {
-      btn.classList.remove('active');
+    // Deactivate all tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
     });
     
+    // Show active tab and highlight button
     document.getElementById(tabId).style.display = 'block';
-    event.currentTarget.classList.add('active');
-  }
-
-  function confirmCancel(url) {
-    document.getElementById('cancelForm').action = url;
-    document.getElementById('cancelModal').style.display = 'flex';
-  }
-  
-  function closeModal() {
-    document.getElementById('cancelModal').style.display = 'none';
-  }
-  
-  function openReviewModal(actionUrl, serviceName) {
-    document.getElementById('reviewForm').action = actionUrl;
-    document.getElementById('reviewServiceName').innerText = serviceName;
-    document.getElementById('reviewModal').style.display = 'flex';
-  }
-  
-  function closeReviewModal() {
-    document.getElementById('reviewModal').style.display = 'none';
-  }
+    const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => 
+        b.innerText.toLowerCase().includes(tabId)
+    );
+    if(activeBtn) activeBtn.classList.add('active');
+}
 </script>
 {% endblock %}

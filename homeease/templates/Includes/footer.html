@@ -19,17 +19,17 @@
       <h4>Quick Links</h4>
       <ul>
         <li><a href="/">Home</a></li>
-        <li><a href="#">Services</a></li>
-        <li><a href="#">Contact</a></li>
+        <li><a href="{% url 'services' %}">Services</a></li>
+        <li><a href="{% url 'contact_us' %}">Contact</a></li>
       </ul>
     </div>
 
     <div class="footer-col">
       <h4>Services</h4>
       <ul>
-        <li><a href="#">Plumbing</a></li>
-        <li><a href="#">Electrician</a></li>
-        <li><a href="#">Cleaning</a></li>
+        <li><a href="{% url 'category_services' 8 %}">Plumbing</a></li>
+        <li><a href="{% url 'category_services' 9 %}">Electrician</a></li>
+        <li><a href="{% url 'category_services' 10 %}">Cleaning</a></li>
       </ul>
     </div>
 

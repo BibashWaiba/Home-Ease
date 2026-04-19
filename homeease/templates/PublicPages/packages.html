@@ -3,7 +3,7 @@
 {% block content %}
 <section class="page-header" style="margin-top: 70px; text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%); border-bottom: 1px solid #eee;">
   <div class="page-header-inner">
-    <span style="background: rgba(255, 107, 0, 0.1); color: #ff6b00; padding: 8px 20px; border-radius: 50px; font-weight: 600; font-size: 0.9rem; margin-bottom: 20px; display: inline-block;">EXCLUSIVE BUNDLES</span>
+    <span style="background: rgba(37, 99, 235, 0.1); color: #2563eb; padding: 8px 20px; border-radius: 50px; font-weight: 600; font-size: 0.9rem; margin-bottom: 20px; display: inline-block;">EXCLUSIVE BUNDLES</span>
     <h1 style="margin-bottom: 15px; font-size: 3rem; color: #1a1a1a; font-weight: 800;">Service Packages</h1>
     <p style="color: #666; font-size: 1.2rem; max-width: 700px; margin: 0 auto;">Get more for less! Bundle multiple services together and save with our special combo prices.</p>
   </div>
@@ -22,7 +22,7 @@
                 <i class="fas fa-box-open" style="font-size: 4rem; color: #ccc;"></i>
               </div>
             {% endif %}
-            <div style="position: absolute; top: 20px; right: 20px; background: #ff6b00; color: white; padding: 8px 15px; border-radius: 10px; font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(255,107,0,0.3);">
+            <div style="position: absolute; top: 20px; right: 20px; background: #2563eb; color: white; padding: 8px 15px; border-radius: 10px; font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(255,107,0,0.3);">
               Combo: Rs. {{ package.combo_price }}
             </div>
           </div>
@@ -36,7 +36,7 @@
               <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 10px;">
                 {% for service in package.services.all %}
                   <li style="background: #f5f5f5; color: #555; padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center;">
-                    <i class="fas fa-check" style="color: #ff6b00; margin-right: 8px; font-size: 0.7rem;"></i>
+                    <i class="fas fa-check" style="color: #2563eb; margin-right: 8px; font-size: 0.7rem;"></i>
                     {{ service.name }}
                   </li>
                 {% endfor %}
@@ -52,12 +52,12 @@
     </div>
   {% else %}
     <div style="text-align: center; padding: 80px 20px; background: white; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 600px; margin: 0 auto; border: 1px solid #f0f0f0;">
-      <div style="width: 100px; height: 100px; background: #fff5eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px;">
-        <i class="fas fa-box-open" style="font-size: 3rem; color: #ff6b00;"></i>
+      <div style="width: 100px; height: 100px; background: #eff6ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px;">
+        <i class="fas fa-box-open" style="font-size: 3rem; color: #2563eb;"></i>
       </div>
       <h2 style="color: #333; margin-bottom: 15px;">No Packages Available</h2>
       <p style="color: #666; font-size: 1.1rem; line-height: 1.6;">We're currently working on exciting new service bundles for you. Please check back later!</p>
-      <a href="{% url 'services' %}" style="display: inline-block; margin-top: 30px; padding: 14px 30px; background-color: #ff6b00; color: white; border-radius: 10px; text-decoration: none; font-weight: 600; transition: transform 0.3s ease;">Browse Individual Services</a>
+      <a href="{% url 'services' %}" style="display: inline-block; margin-top: 30px; padding: 14px 30px; background-color: #2563eb; color: white; border-radius: 10px; text-decoration: none; font-weight: 600; transition: transform 0.3s ease;">Browse Individual Services</a>
     </div>
   {% endif %}
 </section>

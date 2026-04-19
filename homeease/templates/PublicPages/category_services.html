@@ -20,7 +20,7 @@
             {% if service.image %}
               <img src="{{ service.image.url }}" alt="{{ service.name }}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
             {% endif %}
-            <h3 style="color: #ff6b00; margin-bottom: 10px; font-size: 1.4rem;">{{ service.name }}</h3>
+            <h3 style="color: #2563eb; margin-bottom: 10px; font-size: 1.4rem;">{{ service.name }}</h3>
             <p style="color: #555; margin-bottom: 20px; flex: 1; line-height: 1.6;">{{ service.description|truncatewords:20 }}</p>
             <div style="font-weight: 700; font-size: 1.3rem; color: #333;">Rs. {{ service.price }}</div>
           </div>

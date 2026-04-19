@@ -1,152 +1,191 @@
 {% extends 'base.html' %}
 {% block title %}{{ service.name }} — Home Ease{% endblock %}
 {% block content %}
-<section class="page-header" style="margin-top: 70px; background-color: #f9f9f9; border-bottom: 1px solid #eee; padding: 40px 20px;">
+<section class="page-header"
+  style="margin-top: 70px; background-color: #f9f9f9; border-bottom: 1px solid #eee; padding: 40px 20px;">
   <div class="page-header-inner" style="max-width: 1000px; margin: 0 auto;">
-    <a href="{% url 'category_services' service.category.id %}" style="display: inline-block; padding: 8px 16px; border: 1px solid #ddd; color: #555; text-decoration: none; border-radius: 6px; font-weight: 500; transition: all 0.3s ease; margin-bottom: 20px;">&larr; Back to {{ service.category.name }}</a>
+    <a href="{% url 'category_services' service.category.id %}"
+      style="display: inline-block; padding: 8px 16px; border: 1px solid #ddd; color: #555; text-decoration: none; border-radius: 6px; font-weight: 500; transition: all 0.3s ease; margin-bottom: 20px;">&larr;
+      Back to {{ service.category.name }}</a>
   </div>
 </section>
 
 <section class="service-detail" style="padding: 60px 5%; min-height: 60vh;">
-  <div class="service-detail-inner" style="max-width: 1000px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 50px;">
-    
+  <div class="service-detail-inner"
+    style="max-width: 1000px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 50px;">
+
     <div class="service-image" style="flex: 1; min-width: 300px;">
       {% if service.image %}
-        <img src="{{ service.image.url }}" alt="{{ service.name }}" style="width: 100%; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); object-fit: cover; max-height: 500px;">
+      <img src="{{ service.image.url }}" alt="{{ service.name }}"
+        style="width: 100%; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); object-fit: cover; max-height: 500px;">
       {% else %}
-        <div style="width: 100%; height: 400px; background-color: #f5f5f5; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-          <i class="fas fa-tools" style="font-size: 4rem; color: #ddd;"></i>
-        </div>
+      <div
+        style="width: 100%; height: 400px; background-color: #f5f5f5; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+        <i class="fas fa-tools" style="font-size: 4rem; color: #ddd;"></i>
+      </div>
       {% endif %}
     </div>
-    
+
     <div class="service-info" style="flex: 1; min-width: 300px; display: flex; flex-direction: column;">
-      <span style="display: inline-block; padding: 6px 12px; background-color: #ffe8d6; color: #ff6b00; border-radius: 4px; font-weight: 600; font-size: 0.9rem; margin-bottom: 15px; width: max-content;">{{ service.category.name }}</span>
+      <span
+        style="display: inline-block; padding: 6px 12px; background-color: #ffe8d6; color: #2563eb; border-radius: 4px; font-weight: 600; font-size: 0.9rem; margin-bottom: 15px; width: max-content;">{{ service.category.name }}</span>
       <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
         <h1 style="font-size: 2.8rem; color: #333; margin: 0;">{{ service.name }}</h1>
         {% if avg_rating > 0 %}
-          <div style="background: #fff3cd; color: #856404; padding: 6px 12px; border-radius: 20px; font-weight: bold; display: flex; align-items: center; gap: 5px; font-size: 1rem;">
-            <i class="fas fa-star" style="color: #ffc107;"></i> {{ avg_rating }} / 5.0
-          </div>
+        <div
+          style="background: #fff3cd; color: #856404; padding: 6px 12px; border-radius: 20px; font-weight: bold; display: flex; align-items: center; gap: 5px; font-size: 1rem;">
+          <i class="fas fa-star" style="color: #ffc107;"></i> {{ avg_rating }} / 5.0
+        </div>
         {% endif %}
       </div>
-      <div style="font-size: 2rem; font-weight: 700; color: #ff6b00; margin-bottom: 30px;">Rs. {{ service.price }}</div>
-      
+      <div style="font-size: 2rem; font-weight: 700; color: #2563eb; margin-bottom: 30px;">Rs. {{ service.price }}</div>
+
       <h3 style="font-size: 1.4rem; color: #444; margin-bottom: 15px;">Service Description</h3>
       <div style="color: #666; font-size: 1.1rem; line-height: 1.8; margin-bottom: 40px; flex: 1;">
         {{ service.description|linebreaks }}
       </div>
-      
+
       <div class="actions" style="margin-top: auto;">
-        
+
         {% if messages %}
-          {% for message in messages %}
-            <div style="padding: 10px; margin-bottom: 15px; border-radius: 6px; background-color: {% if message.tags == 'success' %}#d4edda{% else %}#f8d7da{% endif %}; color: {% if message.tags == 'success' %}#155724{% else %}#721c24{% endif %}; font-size: 0.95rem;">
-              {{ message }}
-            </div>
-          {% endfor %}
+        {% for message in messages %}
+        <div
+          style="padding: 10px; margin-bottom: 15px; border-radius: 6px; background-color: {% if message.tags == 'success' %}#d4edda{% else %}#f8d7da{% endif %}; color: {% if message.tags == 'success' %}#155724{% else %}#721c24{% endif %}; font-size: 0.95rem;">
+          {{ message }}
+        </div>
+        {% endfor %}
         {% endif %}
 
         {% if has_active_booking %}
-          <div style="background-color: #fff3cd; color: #856404; padding: 25px; border-radius: 12px; border: 1px dashed #ffeeba; margin-top: 15px; text-align: center;">
-            <i class="fas fa-info-circle" style="font-size: 2.5rem; margin-bottom: 15px; color: #ffc107;"></i>
-            <h4 style="margin: 0 0 10px 0; font-size: 1.2rem; color: #333;">Active Booking Exists</h4>
-            <p style="margin: 0; font-size: 1rem; line-height: 1.5; color: #666;">You already have an ongoing booking for this service. Let's finish that one first before booking again!</p>
-            <a href="{% url 'user_dashboard' %}" style="margin-top: 20px; display: inline-block; padding: 12px 24px; background: #ffc107; color: #856404; text-decoration: none; border-radius: 8px; font-weight: 600; transition: transform 0.2s;">View My Dashboard</a>
-          </div>
+        <div
+          style="background-color: #fff3cd; color: #856404; padding: 25px; border-radius: 12px; border: 1px dashed #ffeeba; margin-top: 15px; text-align: center;">
+          <i class="fas fa-info-circle" style="font-size: 2.5rem; margin-bottom: 15px; color: #ffc107;"></i>
+          <h4 style="margin: 0 0 10px 0; font-size: 1.2rem; color: #333;">Active Booking Exists</h4>
+          <p style="margin: 0; font-size: 1rem; line-height: 1.5; color: #666;">You already have an ongoing booking for
+            this service. Let's finish that one first before booking again!</p>
+          <a href="{% url 'user_dashboard' %}"
+            style="margin-top: 20px; display: inline-block; padding: 12px 24px; background: #ffc107; color: #856404; text-decoration: none; border-radius: 8px; font-weight: 600; transition: transform 0.2s;">View
+            My Dashboard</a>
+        </div>
         {% else %}
-          <h4 style="margin-bottom: 15px; color: #333; font-size: 1.2rem;">Book this Service</h4>
-          <form id="bookingForm" action="{% url 'book_service' service.id %}" method="POST" style="display: flex; flex-direction: column; gap: 15px; background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.02);" onsubmit="event.preventDefault(); document.getElementById('bookModal').style.display='flex';">
-            {% csrf_token %}
-            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-              <div style="flex: 1; min-width: 150px;">
-                <label for="date" style="display: block; margin-bottom: 5px; color: #555; font-weight: 500; font-size: 0.95rem;">Select Date</label>
-                <input type="date" id="date" name="date" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
-              </div>
-              <div style="flex: 1; min-width: 150px;">
-                <label for="time" style="display: block; margin-bottom: 5px; color: #555; font-weight: 500; font-size: 0.95rem;">Select Time</label>
-                <input type="time" id="time" name="time" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
-              </div>
+        <h4 style="margin-bottom: 15px; color: #333; font-size: 1.2rem;">Book this Service</h4>
+        <form id="bookingForm" action="{% url 'book_service' service.id %}" method="POST"
+          style="display: flex; flex-direction: column; gap: 15px; background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.02);"
+          onsubmit="event.preventDefault(); document.getElementById('bookModal').style.display='flex';">
+          {% csrf_token %}
+          <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 150px;">
+              <label for="date"
+                style="display: block; margin-bottom: 5px; color: #555; font-weight: 500; font-size: 0.95rem;">Select
+                Date</label>
+              <input type="date" id="date" name="date" required
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
             </div>
-            <button type="submit" style="width: 100%; padding: 16px 24px; background-color: #ff6b00; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: opacity 0.3s ease;">Book Now</button>
-          </form>
+            <div style="flex: 1; min-width: 150px;">
+              <label for="time"
+                style="display: block; margin-bottom: 5px; color: #555; font-weight: 500; font-size: 0.95rem;">Select
+                Time</label>
+              <input type="time" id="time" name="time" required
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
+            </div>
+          </div>
+          <button type="submit"
+            style="width: 100%; padding: 16px 24px; background-color: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: opacity 0.3s ease;">Book
+            Now</button>
+        </form>
         {% endif %}
         <div style="margin-top: 15px; text-align: center;">
-          <a href="{% url 'contact_us' %}" style="display: inline-block; color: #666; text-decoration: none; font-size: 0.95rem; border-bottom: 1px solid #ccc; transition: color 0.3s ease;">Have questions? Contact Support</a>
+          <a href="{% url 'contact_us' %}"
+            style="display: inline-block; color: #666; text-decoration: none; font-size: 0.95rem; border-bottom: 1px solid #ccc; transition: color 0.3s ease;">Have
+            questions? Contact Support</a>
         </div>
       </div>
     </div>
-    
+
   </div>
 </section>
 
 <section class="service-reviews" style="padding: 60px 5%; background-color: #fff; border-top: 1px solid #eee;">
   <div class="reviews-inner" style="max-width: 1000px; margin: 0 auto;">
     <h2 style="font-size: 2.2rem; color: #333; margin-bottom: 40px;">Customer Reviews</h2>
-    
+
     <div style="display: flex; flex-wrap: wrap; gap: 40px;">
       <!-- Reviews List -->
       <div class="reviews-list" style="flex: 2; min-width: 300px;">
         {% if reviews %}
-          <div style="display: flex; flex-direction: column; gap: 20px;">
-            {% for review in reviews %}
-              <div style="background: #f9f9f9; padding: 25px; border-radius: 12px; border: 1px solid #f0f0f0;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #ff6b00; color: white; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.2rem;">
-                      {{ review.user.username|make_list|first|upper }}
-                    </div>
-                    <h4 style="margin: 0; color: #333; font-size: 1.15rem;">{{ review.user.username }}</h4>
-                  </div>
-                  <span style="color: #999; font-size: 0.9rem;">{{ review.created_at|date:"M d, Y" }}</span>
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          {% for review in reviews %}
+          <div style="background: #f9f9f9; padding: 25px; border-radius: 12px; border: 1px solid #f0f0f0;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div
+                  style="width: 40px; height: 40px; border-radius: 50%; background: #2563eb; color: white; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.2rem;">
+                  {{ review.user.username|make_list|first|upper }}
                 </div>
-                <div style="color: #ffc107; margin-bottom: 15px; font-size: 1rem; margin-left: 50px;">
-                  {% for i in "12345" %}
-                    {% if forloop.counter <= review.rating %}
-                      <i class="fas fa-star"></i>
-                    {% else %}
-                      <i class="far fa-star" style="color: #ddd;"></i>
-                    {% endif %}
-                  {% endfor %}
-                </div>
-                <p style="color: #555; line-height: 1.7; margin: 0; margin-left: 50px; font-size: 1.05rem;">{{ review.comment }}</p>
+                <h4 style="margin: 0; color: #333; font-size: 1.15rem;">{{ review.user.username }}</h4>
               </div>
-            {% endfor %}
+              <span style="color: #999; font-size: 0.9rem;">{{ review.created_at|date:"M d, Y" }}</span>
+            </div>
+            <div style="color: #ffc107; margin-bottom: 15px; font-size: 1rem; margin-left: 50px;">
+              {% for i in "12345" %}
+              {% if forloop.counter <= review.rating %} <i class="fas fa-star"></i>
+                {% else %}
+                <i class="far fa-star" style="color: #ddd;"></i>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <p style="color: #555; line-height: 1.7; margin: 0; margin-left: 50px; font-size: 1.05rem;">{{ review.comment }}</p>
           </div>
+          {% endfor %}
+        </div>
         {% else %}
-          <div style="text-align: center; padding: 50px 20px; background: #f9f9f9; border-radius: 12px; border: 2px dashed #eee;">
-            <i class="far fa-comment-dots" style="font-size: 3.5rem; color: #ddd; margin-bottom: 20px;"></i>
-            <h3 style="color: #555; font-size: 1.3rem; margin-bottom: 10px;">No reviews yet</h3>
-            <p style="color: #888;">Be the first to share your experience with this service!</p>
-          </div>
+        <div
+          style="text-align: center; padding: 50px 20px; background: #f9f9f9; border-radius: 12px; border: 2px dashed #eee;">
+          <i class="far fa-comment-dots" style="font-size: 3.5rem; color: #ddd; margin-bottom: 20px;"></i>
+          <h3 style="color: #555; font-size: 1.3rem; margin-bottom: 10px;">No reviews yet</h3>
+          <p style="color: #888;">Be the first to share your experience with this service!</p>
+        </div>
         {% endif %}
+      </div>
     </div>
-  </div>
 </section>
 
 <!-- Custom Confirmation Modal -->
-<div id="bookModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
-  <div class="modal-content" style="background: white; padding: 40px 30px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: popIn 0.3s ease-out;">
-    <i class="fas fa-calendar-check" style="font-size: 3.5rem; color: #ff6b00; margin-bottom: 20px;"></i>
+<div id="bookModal"
+  style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+  <div class="modal-content"
+    style="background: white; padding: 40px 30px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: popIn 0.3s ease-out;">
+    <i class="fas fa-calendar-check" style="font-size: 3.5rem; color: #2563eb; margin-bottom: 20px;"></i>
     <h3 style="margin-bottom: 15px; color: #333; font-size: 1.5rem;">Confirm Booking?</h3>
-    <p style="color: #666; margin-bottom: 30px; line-height: 1.5; font-size: 1.05rem;">Are you sure you want to book this service for your selected date and time?</p>
+    <p style="color: #666; margin-bottom: 30px; line-height: 1.5; font-size: 1.05rem;">Are you sure you want to book
+      this service for your selected date and time?</p>
     <div style="display: flex; gap: 15px; justify-content: center;">
-      <button type="button" onclick="document.getElementById('bookModal').style.display='none'" style="flex: 1; padding: 12px 20px; border: 1px solid #ddd; background: white; color: #555; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: background-color 0.2s;">Cancel</button>
-      <button type="button" onclick="document.getElementById('bookingForm').submit()" style="flex: 1; padding: 12px 20px; background: #ff6b00; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: opacity 0.2s;">Yes, Book</button>
+      <button type="button" onclick="document.getElementById('bookModal').style.display='none'"
+        style="flex: 1; padding: 12px 20px; border: 1px solid #ddd; background: white; color: #555; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: background-color 0.2s;">Cancel</button>
+      <button type="button" onclick="document.getElementById('bookingForm').submit()"
+        style="flex: 1; padding: 12px 20px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: opacity 0.2s;">Yes,
+        Book</button>
     </div>
   </div>
 </div>
 
 <style>
   @keyframes popIn {
-    0% { transform: scale(0.9); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+    0% {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 </style>
 
 <script>
   // Prevent past dates from being selected in the booking form
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const today = new Date().toISOString().split('T')[0];
     const dateInput = document.getElementById('date');
     if (dateInput) {

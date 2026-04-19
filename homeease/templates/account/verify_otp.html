@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP - Home Ease</title>
+    <link rel="stylesheet" href="{% static 'assets/css/account/login.css' %}" />
+</head>
+<body>
+<div class="body">
+  <div class="login-main">
+    <!-- Left Image -->
+    <div class="login-image">
+      <p class="login-image-text">Security First!<br>Check your email for the code.</p>
+    </div>
+
+    <!-- Right Form -->
+    <div class="login-form-container">
+      <h2>Verify OTP</h2>
+      <p class="login-subtitle">We've sent a 6-digit verification code to your email. Please enter it below to proceed.</p>
+      
+      <!-- Display Messages -->
+      {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      
+      <form method="POST">
+        {% csrf_token %}
+        
+        <!-- OTP -->
+        <div class="form-group">
+          <label for="otp">Enter 6-digit OTP Code <span style="color: #e74c3c;">*</span></label>
+          <input 
+            type="text" 
+            id="otp" 
+            name="otp" 
+            placeholder="· · · · · ·"
+            required 
+            maxlength="6"
+            style="text-align: center; font-size: 24px; letter-spacing: 12px; font-weight: 700;"
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="login-btn">Verify Code</button>
+      </form>
+
+      <!-- Resend OTP -->
+      <div class="register-redirect" style="margin-top: 25px;">
+        Didn't receive the code? 
+        <form method="post" action="{% url 'forgot_password' %}" style="display: inline;">
+          {% csrf_token %}
+          <input type="hidden" name="email" value="{{ request.session.reset_email }}">
+          <button type="submit" style="background: none; border: none; color: #667eea; font-weight: 600; cursor: pointer; font-family: inherit; font-size: inherit;">Resend OTP</button>
+        </form>
+      </div>
+      
+      <div class="register-redirect" style="margin-top: 10px;">
+        <a href="{% url 'login' %}" style="font-size: 13px; color: #999;">Back to Login</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

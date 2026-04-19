@@ -16,7 +16,6 @@
     {% if user.is_staff or user.is_superuser %}
     <a href="{% url 'admin_dashboard' %}" class="btn-ghost" title="My Account"><i class="fas fa-user-circle"></i></a>
     {% else %}
-    <a href="{% url 'user_dashboard' %}" class="btn-ghost" title="My Bookings">Bookings</a>
     <a href="{% url 'user_dashboard' %}" class="btn-ghost" title="My Dashboard"><i class="fas fa-user-circle"></i></a>
     {% endif %}
     <a href="{% url 'logout' %}" class="btn-primary">Logout</a>

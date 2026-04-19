@@ -3,23 +3,31 @@
   <div class="brand">
     <div>
       <strong>Home<span>Ease</span></strong>
-      <div class="role">User Panel</div>
+      <div class="role">User Dashboard</div>
     </div>
-    
   </div>
+
   <nav class="nav">
     <a href="{% url 'user_dashboard' %}" class="{% if request.resolver_match.url_name == 'user_dashboard' %}active{% endif %}">
-      My Bookings
+      <span>Overview</span>
     </a>
-    <a href="{% url 'user_profile' %}" class="{% if request.resolver_match.url_name == 'user_profile' %}active{% endif %}">
-      Profile Settings
+    <a href="{% url 'profile' %}" class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+      <span>My Profile</span>
     </a>
+    
+    <div style="margin: 30px 0 10px 15px; font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">Discover</div>
+    
     <a href="{% url 'home' %}">
-      Back to Website
+      <span>Home Page</span>
     </a>
-    <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 10px;"></div>
-    <a href="{% url 'logout' %}" style="color: var(--bad);">
-      Logout
+    <a href="{% url 'services' %}">
+      <span>Browse Services</span>
     </a>
+    
+    <div style="margin-top: auto; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05);">
+      <a href="{% url 'logout' %}" style="color: #f87171;">
+        <i class="fas fa-sign-out-alt" style="margin-right: 12px; opacity: 0.8;"></i> Sign Out
+      </a>
+    </div>
   </nav>
 </aside>
