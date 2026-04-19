@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Admin Dashboard - Home Ease{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'assets/css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/admin/dashboard.css' %}">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4, .brand strong { font-family: 'Plus Jakarta Sans', sans-serif; }
+    
+    .alert {
+        padding: 16px;
+        border-radius: var(--radius-sm);
+        margin-bottom: 24px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideIn 0.3s ease-out;
+    }
+    .alert-success { background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5; }
+    .alert-error, .alert-danger { background: #fef2f2; color: #991b1b; border: 1px solid #fee2e2; }
+    
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  
+  <div class="dashboard-container">
+    {% include 'AdminDashboard/includes/sidebar.html' %}
+    
+    <main class="main-content">
+      {% include 'AdminDashboard/includes/header.html' %}
+      
+      <div class="content-body" style="padding: 40px;">
+        {% if messages %}
+          <div class="messages">
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags|default:'info' }}">
+                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Smooth transitions for search box
+    const searchInput = document.querySelector('.search-box input');
+    if (searchInput) {
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.style.boxShadow = 'none';
+        });
+    }
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
