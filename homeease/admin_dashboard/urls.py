@@ -37,4 +37,7 @@ urlpatterns = [
     # Contact Messages
     path('contact-messages/', views.admin_contact_messages_list, name='admin_contact_messages_list'),
     path('contact-messages/delete/<int:pk>/', views.admin_contact_messages_delete, name='admin_contact_messages_delete'),
+    
+    # Payment History
+    path('payment-history/', views.admin_payment_history, name='admin_payment_history'),
 ]

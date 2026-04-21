@@ -82,7 +82,6 @@ class BookingForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Set the min attribute to today's date to prevent selecting past dates in UI
         self.fields['date'].widget.attrs['min'] = date.today().isoformat()
         
     def clean_date(self):

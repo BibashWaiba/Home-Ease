@@ -1,64 +1,336 @@
 {% extends 'base.html' %}
 {% block title %}Services — Home Ease{% endblock %}
 {% block content %}
+
+<style>
+  /* ── Filter bar ── */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: 900px;
+    margin: 22px auto 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .filter-bar select {
+    flex: 0 0 auto;
+    min-width: 220px;
+    padding: 13px 18px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.97rem;
+    background: #fff;
+    color: #333;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .filter-bar select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+  }
+  .filter-search-form {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+    min-width: 240px;
+  }
+  .filter-search-form input {
+    flex: 1;
+    padding: 13px 18px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.97rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: border-color 0.2s;
+  }
+  .filter-search-form input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+  }
+  .btn-search {
+    padding: 13px 26px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.97rem;
+    cursor: pointer;
+    transition: background-color 0.25s, transform 0.15s;
+    white-space: nowrap;
+  }
+  .btn-search:hover { background-color: #1d4ed8; transform: translateY(-1px); }
+
+  /* ── Service cards ── */
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 28px;
+  }
+  .service-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+  .service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  }
+  .service-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 18px;
+  }
+  .service-card h3 { color: #2563eb; margin-bottom: 8px; font-size: 1.3rem; }
+  .service-card p  { color: #555; margin-bottom: 18px; flex: 1; line-height: 1.6; font-size: 0.95rem; }
+  .service-card .price { font-weight: 700; font-size: 1.2rem; color: #333; }
+  .service-card .badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    background: #eff6ff;
+    color: #2563eb;
+    border-radius: 20px;
+    padding: 3px 10px;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  /* ── Empty state ── */
+  .empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .empty-state p { color: #666; font-size: 1.05rem; margin-bottom: 18px; }
+  .empty-state a {
+    display: inline-block;
+    padding: 10px 22px;
+    border: 1.5px solid #2563eb;
+    color: #2563eb;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+  }
+  .empty-state a:hover { background: #2563eb; color: #fff; }
+
+  /* ── Pagination (all-services only) ── */
+  .pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 52px;
+    flex-wrap: wrap;
+  }
+  .page-info {
+    color: #888;
+    font-size: 0.88rem;
+    text-align: center;
+    margin-top: 14px;
+  }
+  .page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+    color: #333;
+    font-size: 0.92rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .page-link:hover {
+    border-color: #2563eb;
+    color: #2563eb;
+    background: #eff6ff;
+    transform: translateY(-1px);
+  }
+  .page-link.active {
+    background: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
+    box-shadow: 0 3px 10px rgba(37,99,235,0.3);
+    pointer-events: none;
+  }
+  .page-link.disabled {
+    color: #ccc;
+    border-color: #eee;
+    pointer-events: none;
+    box-shadow: none;
+  }
+  .page-ellipsis {
+    color: #aaa;
+    font-size: 1rem;
+    padding: 0 4px;
+    line-height: 40px;
+  }
+</style>
+
+<!-- ── Page header with filter bar ── -->
 <section class="page-header" style="margin-top: 70px; text-align: center; padding: 40px 20px; background-color: #f9f9f9; border-bottom: 1px solid #eee;">
   <div class="page-header-inner">
     <h1 style="margin-bottom: 10px; font-size: 2.5rem; color: #333;">Our Services</h1>
-    <p style="color: #666; font-size: 1.1rem;">Search for a service or browse categories below</p>
-    
-    <div class="search-bar" style="max-width: 600px; margin: 25px auto 0;">
-      <form action="{% url 'services' %}" method="GET" style="display: flex; gap: 10px;">
-        <input type="text" name="q" placeholder="Search for plumbers, electricians..." value="{{ query }}" required style="flex: 1; padding: 14px 20px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-        <button type="submit" style="padding: 14px 28px; background-color: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background-color 0.3s ease;">Search</button>
-      </form>
-    </div>
+    <p style="color: #666; font-size: 1.1rem;">Filter by category or search for a specific service</p>
+
+    <form id="filter-form" action="{% url 'services' %}" method="GET" class="filter-bar">
+      <select name="category" id="category-select" onchange="this.form.submit()">
+        <option value="">All Services</option>
+        {% for cat in categories %}
+          <option value="{{ cat.id }}" {% if selected_category == cat.id|stringformat:"s" %}selected{% endif %}>
+            {{ cat.name }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <div class="filter-search-form">
+        <input type="text" name="q" id="search-input"
+               placeholder="Search plumbers, electricians…"
+               value="{{ query }}"
+               autocomplete="off">
+        <button type="submit" class="btn-search">Search</button>
+      </div>
+    </form>
   </div>
 </section>
 
-<section class="services-content" style="padding: 60px 5%; min-height: 50vh;">
+<!-- ── Service listing ── -->
+<section class="services-content" style="padding: 50px 5%; min-height: 50vh;">
+
+  <!-- ===== SEARCH RESULTS (no pagination) ===== -->
   {% if is_search %}
-    <h2 style="margin-bottom: 40px; text-align: center; color: #333;">Search Results for "{{ query }}"</h2>
+    <h2 style="margin-bottom: 36px; text-align: center; color: #333;">
+      Search Results for &ldquo;{{ query }}&rdquo;
+      <span style="font-size: 1rem; color: #888; font-weight: 400;">({{ services|length }} found)</span>
+    </h2>
     {% if services %}
-      <div class="services-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+      <div class="services-grid">
         {% for service in services %}
-          <a href="{% url 'service_detail' service.id %}" style="text-decoration: none; color: inherit; display: block;">
-            <div class="service-card" style="background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 25px; display: flex; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)';">
-              {% if service.image %}
-                <img src="{{ service.image.url }}" alt="{{ service.name }}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
-              {% endif %}
-              <h3 style="color: #2563eb; margin-bottom: 10px; font-size: 1.4rem;">{{ service.name }}</h3>
-              <p style="color: #555; margin-bottom: 20px; flex: 1; line-height: 1.6;">{{ service.description|truncatewords:20 }}</p>
-              <div style="font-weight: 700; font-size: 1.3rem; color: #333;">Rs. {{ service.price }}</div>
-            </div>
+          <a href="{% url 'service_detail' service.id %}" class="service-card">
+            {% if service.image %}<img src="{{ service.image.url }}" alt="{{ service.name }}">{% endif %}
+            <span class="badge">{{ service.category.name }}</span>
+            <h3>{{ service.name }}</h3>
+            <p>{{ service.description|truncatewords:20 }}</p>
+            <div class="price">Rs. {{ service.price }}</div>
           </a>
         {% endfor %}
       </div>
     {% else %}
-      <div style="text-align: center; padding: 40px; background: #fff; border-radius: 8px;">
-        <i class="fas fa-search" style="font-size: 3rem; color: #ddd; margin-bottom: 15px;"></i>
-        <p style="color: #666; font-size: 1.1rem;">No services found matching your query. Please try searching with different keywords.</p>
-        <a href="{% url 'services' %}" style="display: inline-block; margin-top: 20px; padding: 10px 20px; border: 1px solid #2563eb; color: #2563eb; border-radius: 6px; text-decoration: none; font-weight: 500;">View All Categories</a>
+      <div class="empty-state">
+        <p>No services found for &ldquo;{{ query }}&rdquo;. Try different keywords.</p>
+        <a href="{% url 'services' %}">View All Services</a>
       </div>
     {% endif %}
+
+  <!-- ===== CATEGORY FILTER (no pagination) ===== -->
+  {% elif is_filtered %}
+    {% for cat in categories %}
+      {% if cat.id|stringformat:"s" == selected_category %}
+        <h2 style="margin-bottom: 36px; text-align: center; color: #333;">{{ cat.name }}</h2>
+      {% endif %}
+    {% endfor %}
+    {% if services %}
+      <div class="services-grid">
+        {% for service in services %}
+          <a href="{% url 'service_detail' service.id %}" class="service-card">
+            {% if service.image %}<img src="{{ service.image.url }}" alt="{{ service.name }}">{% endif %}
+            <span class="badge">{{ service.category.name }}</span>
+            <h3>{{ service.name }}</h3>
+            <p>{{ service.description|truncatewords:20 }}</p>
+            <div class="price">Rs. {{ service.price }}</div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>No services in this category yet.</p>
+        <a href="{% url 'services' %}">View All Services</a>
+      </div>
+    {% endif %}
+
+  <!-- ===== ALL SERVICES — paginated ===== -->
   {% else %}
-    <h2 style="margin-bottom: 40px; text-align: center; color: #333;">Browse by Category</h2>
-    {% if categories %}
-      <div class="categories-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
-        {% for category in categories %}
-          <a href="{% url 'category_services' category.id %}" style="text-decoration: none; color: inherit; display: block;">
-            <div class="category-card" style="background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 25px; text-align: center; transition: all 0.3s ease; border: 1px solid transparent;" onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor='#2563eb'; this.style.boxShadow='0 8px 25px rgba(255,107,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='transparent'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)';">
-              {% if category.image %}
-                <img src="{{ category.image.url }}" alt="{{ category.name }}" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
-              {% endif %}
-              <h3 style="color: #333; margin-bottom: 10px; font-size: 1.3rem; transition: color 0.3s ease;">{{ category.name }}</h3>
-              <p style="color: #777; font-size: 0.95rem; line-height: 1.5;">{{ category.description|truncatewords:15 }}</p>
-            </div>
-          </a>
+    <h2 style="margin-bottom: 36px; text-align: center; color: #333;">All Services</h2>
+
+    <div class="services-grid">
+      {% for service in page_obj %}
+        <a href="{% url 'service_detail' service.id %}" class="service-card">
+          {% if service.image %}<img src="{{ service.image.url }}" alt="{{ service.name }}">{% endif %}
+          <span class="badge">{{ service.category.name }}</span>
+          <h3>{{ service.name }}</h3>
+          <p>{{ service.description|truncatewords:20 }}</p>
+          <div class="price">Rs. {{ service.price }}</div>
+        </a>
+      {% empty %}
+        <div class="empty-state" style="grid-column: 1/-1;">
+          <p>No services available yet. Please check back later.</p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- ── Pagination — below services, above footer ── -->
+    <div class="pagination-nav" style="display: block; width: 100%; margin-top: 52px; padding-bottom: 20px; text-align: center;">
+      <div class="pagination-wrapper">
+
+        {% if page_obj.has_previous %}
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&#8592; Prev</a>
+        {% else %}
+          <span class="page-link disabled">&#8592; Prev</span>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <span class="page-link active">{{ num }}</span>
+          {% elif num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+          {% elif num == 1 or num == page_obj.paginator.num_pages %}
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+          {% elif num == page_obj.number|add:"-3" or num == page_obj.number|add:"3" %}
+            <span class="page-ellipsis">…</span>
+          {% endif %}
         {% endfor %}
+
+        {% if page_obj.has_next %}
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &#8594;</a>
+        {% else %}
+          <span class="page-link disabled">Next &#8594;</span>
+        {% endif %}
+
       </div>
-    {% else %}
-      <p style="text-align: center; color: #666; font-size: 1.1rem;">No categories available yet. Please check back later.</p>
-    {% endif %}
+      <p class="page-info">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        &nbsp;&middot;&nbsp;
+        {{ page_obj.paginator.count }} service{{ page_obj.paginator.count|pluralize }} total
+      </p>
+    </div>
+
   {% endif %}
+
 </section>
 {% endblock %}

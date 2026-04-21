@@ -39,6 +39,10 @@
       class="{% if 'admin_bookings' in request.resolver_match.url_name %}active{% endif %}">
       <span>Bookings</span>
     </a>
+    <a href="{% url 'admin_payment_history' %}"
+      class="{% if 'admin_payment_history' in request.resolver_match.url_name %}active{% endif %}">
+      <span>Payment History</span>
+    </a>
     <a href="{% url 'admin_contact_messages_list' %}"
       class="{% if 'admin_contact_messages' in request.resolver_match.url_name %}active{% endif %}">
       <span>Contact Messages</span>
@@ -49,7 +53,7 @@
       System</div>
 
     <a href="{% url 'home' %}">
-      <span>View Public Site</span>
+      <span>View Home page</span>
     </a>
 
     <div style="margin-top: auto; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.05);">

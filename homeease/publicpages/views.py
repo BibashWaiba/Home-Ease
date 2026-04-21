@@ -2,47 +2,70 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Contact, Category, Service, Package
 from django.db.models import Q
+from django.core.paginator import Paginator
+import uuid
+import hmac
+import hashlib
+import base64
+import json
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from .models import Review
+from user_dashboard.models import Booking
 
 # Create your views here.
 def Home(request):
-    """
-    Home page view
-    """
     return render(request, "PublicPages/index.html")
 
 def ServicesList(request):
-    """
-    Shows all categories, or search results if 'q' is provided
-    """
     query = request.GET.get('q', '')
+    category_id = request.GET.get('category', '')
+    page_number = request.GET.get('page', 1)
+    categories = Category.objects.all()
+
     if query:
-        # User is searching for a service
+        # Search — return all matches, no pagination
         services = Service.objects.filter(Q(name__icontains=query) | Q(description__icontains=query))
-        return render(request, "PublicPages/services.html", {'services': services, 'query': query, 'is_search': True})
+        return render(request, "PublicPages/services.html", {
+            'services': services,
+            'query': query,
+            'is_search': True,
+            'categories': categories,
+            'selected_category': category_id,
+        })
+    elif category_id:
+        # Category filter — return all matches, no pagination
+        services = Service.objects.filter(category__id=category_id)
+        return render(request, "PublicPages/services.html", {
+            'services': services,
+            'categories': categories,
+            'selected_category': category_id,
+            'is_search': False,
+            'is_filtered': True,
+        })
     else:
-        # Show all categories
-        categories = Category.objects.all()
-        return render(request, "PublicPages/services.html", {'categories': categories, 'is_search': False})
+        # All services — paginated, 12 per page
+        services_qs = Service.objects.all()
+        paginator = Paginator(services_qs, 12)
+        page_obj = paginator.get_page(page_number)
+        return render(request, "PublicPages/services.html", {
+            'page_obj': page_obj,
+            'categories': categories,
+            'selected_category': '',
+            'is_search': False,
+            'is_filtered': False,
+        })
 
 def CategoryServices(request, category_id):
-    """
-    Shows services under a specific category
-    """
     category = get_object_or_404(Category, id=category_id)
     services = Service.objects.filter(category=category)
     return render(request, "PublicPages/category_services.html", {'category': category, 'services': services})
 
 def PackagesList(request):
-    """
-    Shows all available packages
-    """
     packages = Package.objects.all()
     return render(request, "PublicPages/packages.html", {'packages': packages})
 
 def PackageDetail(request, package_id):
-    """
-    Shows details of a specific package
-    """
     package = get_object_or_404(Package, id=package_id)
     has_active_booking = False
     
@@ -56,9 +79,6 @@ def PackageDetail(request, package_id):
     })
 
 def ServiceDetail(request, service_id):
-    """
-    Shows full details of a specific service
-    """
     service = get_object_or_404(Service, id=service_id)
     reviews = service.reviews.all().order_by('-created_at')
     
@@ -82,8 +102,7 @@ def ServiceDetail(request, service_id):
         'has_active_booking': has_active_booking
     })
 
-from django.contrib.auth.decorators import login_required
-from .models import Review
+
 
 @login_required
 def SubmitReview(request, service_id):
@@ -121,14 +140,10 @@ def SubmitReview(request, service_id):
         return redirect(next_url)
     return redirect('service_detail', service_id=service_id)
 
-from django.contrib.auth.decorators import login_required
-from user_dashboard.models import Booking
+
 
 @login_required
 def BookService(request, service_id):
-    """
-    Handles booking a service with a date and time
-    """
     if request.user.is_staff or request.user.is_superuser:
         messages.error(request, "Admin accounts cannot book services.")
         return redirect('service_detail', service_id=service_id)
@@ -155,9 +170,6 @@ def BookService(request, service_id):
 
 @login_required
 def BookPackage(request, package_id):
-    """
-    Handles booking a package with a date and time
-    """
     if request.user.is_staff or request.user.is_superuser:
         messages.error(request, "Admin accounts cannot book service packages.")
         return redirect('package_detail', package_id=package_id)
@@ -183,18 +195,9 @@ def BookPackage(request, package_id):
     return redirect('package_detail', package_id=package_id)
 
 
-import uuid
-import hmac
-import hashlib
-import base64
-import json
-from django.urls import reverse
 
 @login_required
 def EsewaRequestView(request, booking_id):
-    """
-    Initializes eSewa payment and renders auto-submit form
-    """
     Booking.auto_cancel_expired()
     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
     
@@ -244,10 +247,6 @@ def EsewaRequestView(request, booking_id):
 
 @login_required
 def EsewaVerifyView(request, booking_id):
-    """
-    Callback URL for eSewa to verify payment.
-    Verifies the HMAC signature from eSewa before confirming booking.
-    """
     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
     data = request.GET.get('data')
     
@@ -274,11 +273,22 @@ def EsewaVerifyView(request, booking_id):
             if not hmac.compare_digest(expected_signature, received_signature):
                 messages.error(request, "Payment verification failed: invalid signature.")
                 return redirect('user_dashboard')
-            # --- Signature verified ---
+            
             
             if json_data.get('status') == 'COMPLETE':
+                from user_dashboard.models import Payment
                 booking.status = 'Confirmed'
                 booking.save()
+                
+                # Record the transaction
+                Payment.objects.create(
+                    booking=booking,
+                    transaction_id=json_data.get('transaction_code'),
+                    amount=json_data.get('total_amount'),
+                    status='COMPLETE',
+                    payment_method='eSewa'
+                )
+                
                 item_name = booking.service.name if booking.service else booking.package.name
                 messages.success(request, f"Payment via eSewa successful! Your booking for {item_name} is confirmed.")
             else:
@@ -291,15 +301,9 @@ def EsewaVerifyView(request, booking_id):
     return redirect('user_dashboard')
 
 def About(request):
-    """
-    About us page view
-    """
     return render(request, "PublicPages/about.html")
 
 def ContactUs(request):
-    """
-    Contact us page view
-    """
     if request.method == "POST":
         name = request.POST.get('name')
         email = request.POST.get('email')

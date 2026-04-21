@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.db.models import Q
 from accounts.models import CustomUser
 from publicpages.models import Service, Category, Package, Contact
-from user_dashboard.models import Booking
+from user_dashboard.models import Booking, Payment
 from .forms import ServiceForm, CategoryForm, PackageForm, BookingForm, UserAccountForm
 
 def admin_required(view_func):
@@ -245,3 +245,36 @@ def admin_contact_messages_delete(request, pk):
         messages.success(request, "Contact message deleted successfully.")
         return redirect('admin_contact_messages_list')
     return render(request, 'AdminDashboard/contact_messages/confirm_delete.html', {'item': message})
+
+# Payment History
+@admin_required
+def admin_payment_history(request):
+    """
+    View all financial transactions with customer and transaction details.
+    """
+    query = request.GET.get('q')
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    
+    items = Payment.objects.all().order_by('-created_at')
+    
+    if query:
+        items = items.filter(
+            Q(booking__user__username__icontains=query) |
+            Q(booking__service__name__icontains=query) |
+            Q(booking__package__name__icontains=query) |
+            Q(status__icontains=query)
+        )
+    
+    if start_date:
+        items = items.filter(created_at__date__gte=start_date)
+    if end_date:
+        items = items.filter(created_at__date__lte=end_date)
+    
+    context = {
+        'items': items,
+        'query': query,
+        'start_date': start_date,
+        'end_date': end_date,
+    }
+    return render(request, 'AdminDashboard/payments/list.html', context)

@@ -1,0 +1,105 @@
+{% extends 'AdminDashboard/base.html' %}
+{% block title %}Payment History{% endblock %}
+
+{% block content %}
+<div class="header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px;">
+  <div>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">Audit logs of all financial transactions processed via eSewa.</p>
+  </div>
+  
+  <div style="display: flex; gap: 15px; align-items: center;">
+    <form method="GET" action="" style="display: flex; gap: 10px; align-items: flex-end; background: #f8fafc; padding: 15px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">Search</label>
+        <input type="text" name="q" placeholder="User, service, package..." value="{{ query|default:'' }}" 
+               style="padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-size: 0.85rem; width: 220px;">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">From</label>
+        <input type="date" name="start_date" value="{{ start_date|default:'' }}" 
+               style="padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-size: 0.85rem;">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">To</label>
+        <input type="date" name="end_date" value="{{ end_date|default:'' }}" 
+               style="padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-size: 0.85rem;">
+      </div>
+      <button type="submit" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.85rem; height: 38px;">Filter</button>
+      {% if query or start_date or end_date %}
+        <a href="{% url 'admin_payment_history' %}" class="btn btn-ghost" style="padding: 8px 15px; background: #fee2e2; color: #991b1b; border-color: #fca5a5; height: 38px; display: flex; align-items: center; text-decoration: none; font-size: 0.85rem;">Clear</a>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<div class="table-container" style="background: white; padding: 20px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
+  <div class="table-responsive">
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--light2); text-align: left;">
+          <th style="padding: 15px; color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">Transaction ID</th>
+          <th style="padding: 15px; color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">Customer</th>
+          <th style="padding: 15px; color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">Booking Reference</th>
+          <th style="padding: 15px; color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">Amount Paid</th>
+          <th style="padding: 15px; color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">Paid At</th>
+          <th style="padding: 15px; color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr style="border-bottom: 1px solid var(--light2); transition: background 0.2s;">
+          <td style="padding: 15px;">
+            <code style="background: var(--light2); padding: 4px 8px; border-radius: 4px; color: var(--primary); font-weight: 700;">{{ item.transaction_id }}</code>
+          </td>
+          <td style="padding: 15px;">
+            <div style="display: flex; flex-direction: column;">
+              <span style="font-weight: 600;">{{ item.booking.user.get_full_name|default:item.booking.user.username }}</span>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">{{ item.booking.user.email }}</span>
+            </div>
+          </td>
+          <td style="padding: 15px;">
+             <div style="display: flex; flex-direction: column;">
+              <span style="font-weight: 600;">#BK-{{ item.booking.id }}</span>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">
+                 {% if item.booking.service %}{{ item.booking.service.name }}{% else %}{{ item.booking.package.name }}{% endif %}
+              </span>
+            </div>
+          </td>
+          <td style="padding: 15px; font-weight: 700; color: #059669; font-size: 1rem;">
+            Rs. {{ item.amount }}
+          </td>
+          <td style="padding: 15px; color: var(--text-muted);">
+            {{ item.created_at|date:"M d, Y" }}<br>
+            <small>{{ item.created_at|time:"H:i" }}</small>
+          </td>
+          <td style="padding: 15px;">
+            <span style="padding: 4px 10px; background: #ecfdf5; color: #065f46; border-radius: 4px; font-size: 0.75rem; font-weight: 700; border: 1px solid #d1fae5;">
+                {{ item.status }}
+            </span>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 60px;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+               <div style="width: 64px; height: 64px; background: var(--light2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                  <i class="fas fa-money-bill-wave" style="font-size: 24px;"></i>
+               </div>
+              <p style="color: var(--text-muted); font-weight: 500;">No payment records found.</p>
+              {% if query %}
+                <a href="{% url 'admin_payment_history' %}" style="color: var(--primary); font-weight: 600; text-decoration: none;">View all transactions</a>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  tr:hover { background-color: #f8fafc; }
+  .table-responsive { overflow-x: auto; }
+</style>
+{% endblock %}

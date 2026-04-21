@@ -14,26 +14,26 @@ class CustomUser(AbstractUser):
         ('other', 'Other'),
     )
     
-    # Make fields optional with null=True, blank=True for superuser creation
+
     phone_numberr = models.IntegerField(null=True, blank=True)
     
-    # Override first_name and last_name to make them required
-    first_name = models. CharField(max_length=150, blank=True)  # Changed to blank=True
-    last_name = models.CharField(max_length=150, blank=True)   # Changed to blank=True
+   
+    first_name = models. CharField(max_length=150, blank=True) 
+    last_name = models.CharField(max_length=150, blank=True)   
     
-    # Email is required (override default)
-    email = models.EmailField(unique=True, blank=True)  # Changed to blank=True
+  
+    email = models.EmailField(unique=True, blank=True)  
     
-    address = models.TextField(max_length=255, blank=True, null=True)  # Changed
+    address = models.TextField(max_length=255, blank=True, null=True)  
     
     gender = models.CharField(
         max_length=10,
         choices=GENDER_CHOICES,
-        blank=True,  # Changed
-        null=True    # Added
+        blank=True,  
+        null=True   
     )
     
-    # Metadata
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

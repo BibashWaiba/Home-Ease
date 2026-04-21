@@ -5,8 +5,6 @@
   --blue: #1B4FD8;
   --blue-dark: #0f3ab5;
   --blue-light: #EEF2FF;
-  --orange: #F97316;
-  --orange-dark: #ea6c0a;
   --dark: #0F172A;
   --dark2: #1E293B;
   --muted: #64748B;
@@ -23,10 +21,10 @@ body {
   font-family: 'DM Sans', sans-serif;
   color: var(--dark);
   background: var(--white);
-  overflow-x: hidden;
+  line-height: 1.6;
 }
 
-h1,h2,h3,h4,h5 {
+h1, h2, h3, h4 {
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
@@ -58,10 +56,10 @@ section { padding: 90px 5%; }
 /* FADE */
 .fade-in {
   opacity: 0;
-  transform: translateY(30px);
-  transition: 0.6s;
+  transform: translateY(20px);
+  transition: all 0.6s ease-out;
 }
-.fade-in.visible {
+.fade-in.active {
   opacity: 1;
   transform: translateY(0);
 }
